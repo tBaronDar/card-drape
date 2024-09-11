@@ -16,6 +16,13 @@ import styles from "./page.module.css";
 
 export default function MainScene() {
 	const [cameraManualControl, setCameraManualControls] = useState(false);
+
+	const [cards, setCards] = useState([{ id: 1 }]);
+
+	const newCardHandler = () => {
+		const newId = cards.length + 1;
+		setCards([...cards, { id: newId }]);
+	};
 	return (
 		<div>
 			<button
@@ -24,6 +31,9 @@ export default function MainScene() {
 					setCameraManualControls(!cameraManualControl);
 				}}>
 				Camera Pan
+			</button>
+			<button className={styles.controls} onClick={newCardHandler}>
+				New Card
 			</button>
 			<Canvas>
 				<axesHelper args={[12]} />
@@ -35,9 +45,12 @@ export default function MainScene() {
 						rotation={[Math.PI / -6, 0, 0]}
 					/>
 				)}
-				<directionalLight position={[0, 0, 12]} intensity={0.2} />
+				<directionalLight position={[0, 12, 0]} intensity={0.2} />
+				<ambientLight intensity={0.15} />
 				<Table />
-				<Card />
+				{cards.map((card) => (
+					<Card key={card.id} cardIsDone={newCardHandler} />
+				))}
 			</Canvas>
 		</div>
 	);
