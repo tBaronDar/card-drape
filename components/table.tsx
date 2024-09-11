@@ -4,7 +4,7 @@ import React from "react";
 
 function Table() {
 	return (
-		<group>
+		<group rotation={[-Math.PI / 2, 0, 0]}>
 			//table
 			<mesh position={[0, 0, 0]}>
 				<boxGeometry args={[4, 6, 1]} />
@@ -13,7 +13,7 @@ function Table() {
 			//forward left leg
 			<mesh position={[-1.85, -2.5, -2]}>
 				<boxGeometry args={[0.15, 0.15, -3]} />
-				<meshBasicMaterial color={"brown"} />
+				<meshBasicMaterial color={"yellow"} />
 			</mesh>
 			//forward right leg
 			<mesh position={[1.85, -2.5, -2]}>
