@@ -10,12 +10,12 @@ export default function MainScene() {
 			{/* <OrbitControls /> */}
 			<PerspectiveCamera
 				makeDefault
-				position={[0, 0, 10]}
-				rotation={[0, 0, 0]}
+				position={[0, -6.8, 5]}
+				rotation={[Math.PI / 3.3, 0, 0]}
 			/>
-			<directionalLight position={[0, 0, 5]} intensity={0.2} />
+			<directionalLight position={[0, 0, 12]} intensity={0.2} />
 			<Table />
-			<Card position={[0, -2, 1]} />
+			<Card />
 		</Canvas>
 	);
 }
