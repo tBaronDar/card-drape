@@ -2,8 +2,10 @@
 
 import React, { useRef, useState } from "react";
 import * as THREE from "three";
-import { useFrame } from "@react-three/fiber";
+import { useFrame, useLoader, useThree } from "@react-three/fiber";
 import { useDrag } from "@use-gesture/react";
+
+import image from "@/deck/diamonds-1.jpg";
 
 const tableHeight = 0.5;
 const targetRotation = Math.PI / 2;
@@ -17,17 +19,27 @@ const Card = ({ cardIsDone }) => {
 	const position = useRef([0, 2, 5]);
 
 	const velocity = useRef([0, 0, 0]);
+	const { size } = useThree();
 	const [isDraging, setIsDraging] = useState(false);
 	const [rotation, setRotation] = useState(0);
 
-	const drag = useDrag(({ offset: [x, y], movement: [mx, my], down }) => {
-		setIsDraging(down);
+	const texture = useLoader(THREE.TextureLoader, "/deck/diamonds-1.jpg");
 
-		if (down) {
-			position.current = [x / 100, 2 + -y / 100, 5];
-			velocity.current = [mx / 500, my / 500, my / 200];
+	const drag = useDrag(
+		({ offset: [x, y], movement: [mx, my], down }) => {
+			setIsDraging(down);
+
+			if (down) {
+				position.current = [x / size.height, 2 + -y / size.width, 5];
+				velocity.current = [mx / 500, my / 500, my / 200];
+			}
+		},
+		{
+			pointer: { touch: true }, //touch same as mouse
+			preventScroll: true, //no srcrolling
+			filterTaps: true, //no taps allowed(mobile)
 		}
-	});
+	);
 
 	useFrame((state, delta) => {
 		if (velocity.current[2] !== 0 && rotation > -targetRotation && !isDraging) {
@@ -46,17 +58,17 @@ const Card = ({ cardIsDone }) => {
 		}
 
 		if (position.current[1] <= tableHeight) {
-			position.current[1] = tableHeight; // Reset position to table height
-			velocity.current[1] = 0; // Stop downward movement
+			position.current[1] = tableHeight; // reset position to table
+			velocity.current[1] = 0; // stop downward movement
 		}
 
+		//when on table increase deceleration
 		if (position.current[1] === tableHeight) {
 			velocity.current[0] *= 0.7;
 			velocity.current[2] *= 0.7;
 		}
 
 		if (position.current[1] === tableHeight) {
-			console.log("ffff");
 			cardIsDone();
 		}
 
@@ -67,7 +79,7 @@ const Card = ({ cardIsDone }) => {
 	return (
 		<mesh ref={cardRef} position={position.current} {...drag()}>
 			<boxGeometry args={[0.2, 0.38, 0.01]} />
-			<meshStandardMaterial color={"red"} />
+			<meshStandardMaterial map={texture} />
 		</mesh>
 	);
 };

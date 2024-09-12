@@ -6,3 +6,8 @@
 	overflow: hidden;
 	background-color: lightgrey;
 }
+
+canvas {
+	/* This property makes it work on mobile devices */
+	touch-action: none;
+}

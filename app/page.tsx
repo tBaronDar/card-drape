@@ -7,14 +7,18 @@ import { Vector3 } from "three";
 import { useState } from "react";
 
 import styles from "./page.module.css";
-
-//Math.PI / 3.3
+import { redirect } from "next/navigation";
 
 // X-axis: Red dexia
 // Y-axis: Green pano
 // Z-axis: Blue
 
 export default function MainScene() {
+	//redirect if in mobile
+	// if (window.screen.width < 738) {
+	// 	return redirect("/mobile");
+	// }
+
 	const [cameraManualControl, setCameraManualControls] = useState(false);
 
 	const [cards, setCards] = useState([{ id: 1 }]);
