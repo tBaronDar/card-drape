@@ -18,6 +18,7 @@ export default function MainScene() {
 	// if (window.screen.width < 738) {
 	// 	return redirect("/mobile");
 	// }
+	const [isCameraClicked, setIsCameraClicked] = useState(false);
 
 	const [cameraManualControl, setCameraManualControls] = useState(false);
 
@@ -28,11 +29,14 @@ export default function MainScene() {
 		const newId = cards.length + 1;
 		setCards([...cards, { id: newId }]);
 	};
+
 	return (
 		<div>
+			<h3 className={styles.text}>Dev tools</h3>
 			<button
-				className={styles.controls}
+				className={styles[isCameraClicked ? "button-clicked" : "controls"]}
 				onClick={() => {
+					setIsCameraClicked(!isCameraClicked);
 					setCameraManualControls(!cameraManualControl);
 				}}>
 				Camera Pan
@@ -50,7 +54,8 @@ export default function MainScene() {
 						rotation={[Math.PI / -6, 0, 0]}
 					/>
 				)}
-				<directionalLight position={[0, 12, 0]} intensity={0.2} />
+				<spotLight position={[0, 5, -5]} visible />
+				<directionalLight position={[0, 5, 0]} intensity={0.2} />
 				<ambientLight intensity={0.15} />
 				<Table />
 				{cards.map((card) => (
