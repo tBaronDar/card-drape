@@ -1,17 +1,15 @@
 "use client";
 
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import * as THREE from "three";
 import { useFrame, useLoader, useThree } from "@react-three/fiber";
 import { useDrag } from "@use-gesture/react";
 
-import image from "@/deck/diamonds-1.jpg";
+const tableHeight = 0;
+const targetRotationX = Math.PI / 2;
 
-const tableHeight = 0.5;
-const targetRotation = Math.PI / 2;
-
-// X-axis: Red dexia
-// Y-axis: Green pano
+// X-axis: Red dexia-aristera
+// Y-axis: Green pano-kato
 // Z-axis: Blue
 
 const Card = ({ cardIsDone }) => {
@@ -21,9 +19,21 @@ const Card = ({ cardIsDone }) => {
 	const velocity = useRef([0, 0, 0]);
 	const { size } = useThree();
 	const [isDraging, setIsDraging] = useState(false);
-	const [rotation, setRotation] = useState(0);
+	const [rotationX, setRotationX] = useState(0);
+	const [isRotatingY, setIsRotatingY] = useState(false);
+	const [texture, setTexture] = useState(null);
 
-	const texture = useLoader(THREE.TextureLoader, "/deck/diamonds-1.jpg");
+	const loader = new THREE.TextureLoader();
+	loader.load(
+		"https://card-drape-deck.s3.eu-north-1.amazonaws.com/diamonds-10.jpg", // External texture URL
+		(loadedTexture) => {
+			setTexture(loadedTexture); // Set texture once loaded
+		},
+		undefined,
+		(err) => {
+			console.error("An error occurred while loading the texture", err);
+		}
+	);
 
 	const drag = useDrag(
 		({ offset: [x, y], movement: [mx, my], down }) => {
@@ -42,12 +52,25 @@ const Card = ({ cardIsDone }) => {
 	);
 
 	useFrame((state, delta) => {
-		if (velocity.current[2] !== 0 && rotation > -targetRotation && !isDraging) {
-			const newRotation = Math.min(rotation - 0.1, targetRotation); // rotation
-			setRotation(newRotation);
-			cardRef.current.rotation.x = newRotation; // rotate card
+		//make the card horizontal
+		if (
+			velocity.current[2] !== 0 &&
+			rotationX > -targetRotationX &&
+			!isDraging
+		) {
+			const newRotationX = Math.min(rotationX - 0.15, targetRotationX); // rotation
+			setRotationX(newRotationX);
+			cardRef.current.rotation.x = newRotationX; // rotate card
+			setIsRotatingY(true);
 		}
-		if (!isDraging && position.current[1] >= tableHeight) {
+
+		//card spin
+		if (isRotatingY) {
+			cardRef.current.rotation.z -= 0.35;
+		}
+
+		//card throw
+		if (!isDraging && position.current[1] > tableHeight) {
 			position.current[0] += velocity.current[0];
 			position.current[1] += velocity.current[1];
 			position.current[2] += velocity.current[2];
@@ -57,16 +80,25 @@ const Card = ({ cardIsDone }) => {
 			velocity.current[2] *= 0.95;
 		}
 
+		//fix card on table
 		if (position.current[1] <= tableHeight) {
 			position.current[1] = tableHeight; // reset position to table
 			velocity.current[1] = 0; // stop downward movement
-		}
 
-		//when on table increase deceleration
-		if (position.current[1] === tableHeight) {
+			cardRef.current.rotation.x = targetRotationX;
+			setIsRotatingY(false);
+			// cardRef.current.rotation.z = cardRef.current.rotation.z;
+
+			//when on table increase deceleration
 			velocity.current[0] *= 0.7;
 			velocity.current[2] *= 0.7;
 		}
+
+		//when on table increase deceleration
+		// if (position.current[1] === tableHeight) {
+		// 	velocity.current[0] *= 0.7;
+		// 	velocity.current[2] *= 0.7;
+		// }
 
 		if (position.current[1] === tableHeight) {
 			cardIsDone();

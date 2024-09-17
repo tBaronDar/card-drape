@@ -23,6 +23,7 @@ export default function MainScene() {
 
 	const [cards, setCards] = useState([{ id: 1 }]);
 
+	//fcn that brings in a new card
 	const newCardHandler = () => {
 		const newId = cards.length + 1;
 		setCards([...cards, { id: newId }]);

@@ -7,7 +7,7 @@ function Table() {
 		<group rotation={[-Math.PI / 2, 0, 0]}>
 			//table
 			<mesh position={[0, 0, 0]}>
-				<boxGeometry args={[4, 6, 1]} />
+				<boxGeometry args={[4, 6, -1]} />
 				<meshBasicMaterial color={"green"} />
 			</mesh>
 			//forward left leg
