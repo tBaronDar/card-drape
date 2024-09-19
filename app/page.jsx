@@ -15,8 +15,8 @@ export default function MainScene() {
 	const [cards, setCards] = useState(dummyCards);
 	const [activeCard, setActiveCard] = useState();
 	const [playedCards, setPlayedCards] = useState([]);
-	const [isCameraClicked, setIsCameraClicked] = useState(false);
-	const [cameraManualControl, setCameraManualControls] = useState(false);
+	// const [isCameraClicked, setIsCameraClicked] = useState(false);
+	// const [cameraManualControl, setCameraManualControls] = useState(false);
 
 	useEffect(() => {
 		if (cards.length > 0) {

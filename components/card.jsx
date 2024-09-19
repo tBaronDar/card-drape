@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import * as THREE from "three";
 import { useFrame, useThree } from "@react-three/fiber";
 import { useDrag } from "@use-gesture/react";
@@ -17,16 +17,27 @@ const Card = ({ dealer, activeCard }) => {
 	const position = useRef([0, 2, 5]);
 
 	const velocity = useRef([0, 0, 0]);
-	const { size } = useThree();
+	// const { size } = useThree();
 	const [isDraging, setIsDraging] = useState(false);
 	const [rotationX, setRotationX] = useState(0);
 	// const [isRotatingY, setIsRotatingY] = useState(false);
-
 	const [isCardPlayed, setIsCardPlayed] = useState(false);
+
+	useEffect(() => {
+		const handleTouchStart = (event) => {
+			console.log("Touch started", event);
+		};
+
+		window.addEventListener("touchstart", handleTouchStart);
+
+		return () => {
+			window.removeEventListener("touchstart", handleTouchStart);
+		};
+	}, []);
 
 	const drag = useDrag(
 		({ offset: [x, y], movement: [mx, my], down }) => {
-			console.log(down, { x, y, mx, my });
+			// console.log(down, { x, y, mx, my });
 			if (down) {
 				position.current = [x / 500, 2 + -y / 500, 5];
 				velocity.current = [mx / 500, my / 500, my / 200];
