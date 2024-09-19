@@ -47,44 +47,44 @@ export default function MainScene() {
 	}
 
 	return (
-		<div className={styles.master}>
-			<h3 className={styles.text}>Dev tools</h3>
-			<button
-				className={styles[isCameraClicked ? "button-clicked" : "controls"]}
-				onClick={() => {
-					setIsCameraClicked(!isCameraClicked);
-					setCameraManualControls(!cameraManualControl);
-				}}>
-				Camera Pan
-			</button>
-			<button className={styles.controls}>New Card</button>
-			<Canvas className={styles.canvasMain}>
-				<axesHelper args={[12]} />
-				<spotLight position={[0, 5, -5]} visible />
-				<directionalLight position={[0, 5, 0]} intensity={0.2} />
-				<ambientLight intensity={0.15} />
-				<Table />
-				{cameraManualControl && <OrbitControls position={[0, 4, 6]} />}
-				{!cameraManualControl && (
-					<PerspectiveCamera
-						makeDefault
-						position={[0, 3, 6]}
-						rotation={[Math.PI / -6, 0, 0]}
+		// <div className={styles.master}>
+		// 	<h3 className={styles.text}>Dev tools</h3>
+		// 	<button
+		// 		className={styles[isCameraClicked ? "button-clicked" : "controls"]}
+		// 		onClick={() => {
+		// 			setIsCameraClicked(!isCameraClicked);
+		// 			setCameraManualControls(!cameraManualControl);
+		// 		}}>
+		// 		Camera Pan
+		// 	</button>
+		// 	<button className={styles.controls}>New Card</button>
+		<Canvas className={styles.canvasMain}>
+			<axesHelper args={[12]} />
+			<spotLight position={[0, 5, -5]} visible />
+			<directionalLight position={[0, 5, 0]} intensity={0.2} />
+			<ambientLight intensity={0.15} />
+			<Table />
+			{cameraManualControl && <OrbitControls position={[0, 4, 6]} />}
+			{!cameraManualControl && (
+				<PerspectiveCamera
+					makeDefault
+					position={[0, 3, 6]}
+					rotation={[Math.PI / -6, 0, 0]}
+				/>
+			)}
+			{/* this is the card that you see */}
+			{activeCard && <Card activeCard={activeCard} dealer={dealer} />}
+			{/* this is an array with the cards on the table */}
+			{playedCards.length > 0 &&
+				playedCards.map((card) => (
+					<PlayedCard
+						key={card.name}
+						position={card.cardFinalPosition}
+						rotation={card.cardFinalRotation}
+						texture={null}
 					/>
-				)}
-				{/* this is the card that you see */}
-				{activeCard && <Card activeCard={activeCard} dealer={dealer} />}
-				{/* this is an array with the cards on the table */}
-				{playedCards.length > 0 &&
-					playedCards.map((card) => (
-						<PlayedCard
-							key={card.name}
-							position={card.cardFinalPosition}
-							rotation={card.cardFinalRotation}
-							texture={null}
-						/>
-					))}
-			</Canvas>
-		</div>
+				))}
+		</Canvas>
+		// </div>
 	);
 }
