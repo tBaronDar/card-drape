@@ -6,3 +6,7 @@
 	overflow: hidden;
 	background-color: lightgrey;
 }
+
+canvas {
+	touch-action: none;
+}
