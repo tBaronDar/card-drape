@@ -12,7 +12,7 @@ const targetRotationX = Math.PI / 2;
 // Y-axis: Green pano-kato
 // Z-axis: Blue
 
-const Card = React.memo(({ dealer, activeCard }) => {
+const Card = ({ dealer, activeCard }) => {
 	const cardRef = useRef();
 	const position = useRef([0, 2, 5]);
 
@@ -63,10 +63,10 @@ const Card = React.memo(({ dealer, activeCard }) => {
 			const newRotationX = Math.min(rotationX - 0.15, targetRotationX); // rotation
 			setRotationX(newRotationX);
 			cardRef.current.rotation.x = newRotationX; // rotate card
+			//card spin
 			cardRef.current.rotation.z -= 0.35;
 		}
 
-		//card spin
 		// if (isRotatingY) {
 		// 	cardRef.current.rotation.z -= 0.35;
 		// }
@@ -124,6 +124,6 @@ const Card = React.memo(({ dealer, activeCard }) => {
 			<meshStandardMaterial map={texture} />
 		</mesh>
 	);
-});
+};
 
 export default Card;
