@@ -4,7 +4,7 @@ import { Canvas } from "@react-three/fiber";
 import Table from "@/components/table";
 import Card from "@/components/card";
 import { Euler, Vector3 } from "three";
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { dummyCards } from "@/store/context";
 
 import styles from "./page.module.css";
@@ -68,14 +68,12 @@ export default function MainScene() {
 				{!cameraManualControl && (
 					<PerspectiveCamera
 						makeDefault
-						position={[0, 3, 6.5]}
+						position={[0, 3, 6]}
 						rotation={[Math.PI / -6, 0, 0]}
 					/>
 				)}
 				{/* this is the card that you see */}
-				{activeCard && activeCard.isActive === true && (
-					<Card key={activeCard.name} activeCard={activeCard} dealer={dealer} />
-				)}
+				{activeCard && <Card activeCard={activeCard} dealer={dealer} />}
 				{/* this is an array with the cards on the table */}
 				{playedCards.length > 0 &&
 					playedCards.map((card) => (
