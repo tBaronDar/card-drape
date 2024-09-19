@@ -20,7 +20,7 @@ const Card = React.memo(({ dealer, activeCard }) => {
 	const { size } = useThree();
 	const [isDraging, setIsDraging] = useState(false);
 	const [rotationX, setRotationX] = useState(0);
-	const [isRotatingY, setIsRotatingY] = useState(false);
+	// const [isRotatingY, setIsRotatingY] = useState(false);
 	const [texture, setTexture] = useState(null);
 
 	const [isCardPlayed, setIsCardPlayed] = useState(false);
@@ -39,13 +39,12 @@ const Card = React.memo(({ dealer, activeCard }) => {
 
 	const drag = useDrag(
 		({ offset: [x, y], movement: [mx, my], down }) => {
-			setIsDraging(down);
-
 			if (down) {
 				position.current = [x / size.height, 2 + -y / size.width, 5];
 				velocity.current = [mx / 500, my / 500, my / 200];
 				console.log("dragging :", { x, y, mx, my });
 			}
+			setIsDraging(down);
 		},
 		{
 			pointer: { touch: true }, //touch same as mouse
@@ -64,13 +63,13 @@ const Card = React.memo(({ dealer, activeCard }) => {
 			const newRotationX = Math.min(rotationX - 0.15, targetRotationX); // rotation
 			setRotationX(newRotationX);
 			cardRef.current.rotation.x = newRotationX; // rotate card
-			setIsRotatingY(true);
+			cardRef.current.rotation.z -= 0.35;
 		}
 
 		//card spin
-		if (isRotatingY) {
-			cardRef.current.rotation.z -= 0.35;
-		}
+		// if (isRotatingY) {
+		// 	cardRef.current.rotation.z -= 0.35;
+		// }
 
 		//card throw
 		if (!isDraging && position.current[1] > tableHeight) {
@@ -96,7 +95,6 @@ const Card = React.memo(({ dealer, activeCard }) => {
 			velocity.current[0] *= 0.7;
 			velocity.current[2] *= 0.7;
 
-			setIsRotatingY(false);
 			setIsCardPlayed(true);
 		}
 
