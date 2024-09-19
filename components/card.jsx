@@ -28,7 +28,7 @@ const Card = ({ dealer, activeCard }) => {
 		({ offset: [x, y], movement: [mx, my], down }) => {
 			console.log(down, { x, y, mx, my });
 			if (down) {
-				position.current = [x / size.height, 2 + -y / size.width, 5];
+				position.current = [x / 500, 2 + -y / 500, 5];
 				velocity.current = [mx / 500, my / 500, my / 200];
 			}
 			setIsDraging(down);

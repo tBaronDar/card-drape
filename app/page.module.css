@@ -14,10 +14,9 @@
 	background-color: blue;
 }
 
-canvas {
+.canvasMain {
 	/* This property makes it work on mobile devices */
 	touch-action: none;
-	pointer-events: all;
 }
 
 .master {
