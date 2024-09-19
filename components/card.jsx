@@ -1,9 +1,10 @@
 "use client";
 
-import React, { useRef, useState, useEffect } from "react";
+import React, { useRef, useState, useContext } from "react";
 import * as THREE from "three";
 import { useFrame, useLoader, useThree } from "@react-three/fiber";
 import { useDrag } from "@use-gesture/react";
+import { CardDrapeContext } from "@/store/context";
 
 const tableHeight = 0;
 const targetRotationX = Math.PI / 2;
@@ -12,7 +13,16 @@ const targetRotationX = Math.PI / 2;
 // Y-axis: Green pano-kato
 // Z-axis: Blue
 
-const Card = ({ cardIsDone }) => {
+const Card = () => {
+	const {
+		cards,
+		setCards,
+		activeCard,
+		setActiveCard,
+		playedCards,
+		setPlayedCards,
+	} = useContext(CardDrapeContext);
+
 	const cardRef = useRef();
 	const position = useRef([0, 2, 5]);
 
@@ -22,6 +32,8 @@ const Card = ({ cardIsDone }) => {
 	const [rotationX, setRotationX] = useState(0);
 	const [isRotatingY, setIsRotatingY] = useState(false);
 	const [texture, setTexture] = useState(null);
+
+	const [isCardPlayed, setIsCardPlayed] = useState(false);
 
 	const loader = new THREE.TextureLoader();
 	loader.load(
@@ -82,29 +94,45 @@ const Card = ({ cardIsDone }) => {
 
 		//fix card on table
 		if (position.current[1] <= tableHeight) {
-			position.current[1] = tableHeight; // reset position to table
-			velocity.current[1] = 0; // stop downward movement
+			// reset position to table
+			position.current[1] = tableHeight;
+			// stop downward movement
+			velocity.current[1] = 0;
 
 			cardRef.current.rotation.x = targetRotationX;
-			setIsRotatingY(false);
-			// cardRef.current.rotation.z = cardRef.current.rotation.z;
 
 			//when on table increase deceleration
 			velocity.current[0] *= 0.7;
 			velocity.current[2] *= 0.7;
-		}
 
-		//when on table increase deceleration
-		// if (position.current[1] === tableHeight) {
-		// 	velocity.current[0] *= 0.7;
-		// 	velocity.current[2] *= 0.7;
-		// }
-
-		if (position.current[1] === tableHeight) {
-			cardIsDone();
+			setIsRotatingY(false);
+			setIsCardPlayed(true);
 		}
 
 		cardRef.current.position.lerp(new THREE.Vector3(...position.current), 0.2);
+
+		if (position.current[1] === tableHeight && isCardPlayed && isActive) {
+			console.log("carded landed");
+
+			const disActivatedCard = {
+				name: activeCard.name,
+				isActive: false,
+				isOnTable: true,
+				cardFinalPosition: position.current,
+				cardFinalRotation: [
+					cardRef.current.rotation.x,
+					cardRef.current.rotation.y,
+					cardRef.current.rotation.z,
+				],
+				setCardFinalPosition: () => {},
+			};
+
+			playedCards.push(disActivatedCard);
+			cards.shift();
+			setCards(cards);
+			setPlayedCards(playedCards);
+			setActiveCard(null);
+		}
 	});
 
 	//Math.PI / 8
