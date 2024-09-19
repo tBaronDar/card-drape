@@ -111,7 +111,11 @@ const Card = () => {
 
 		cardRef.current.position.lerp(new THREE.Vector3(...position.current), 0.2);
 
-		if (position.current[1] === tableHeight && isCardPlayed && isActive) {
+		if (
+			position.current[1] === tableHeight &&
+			isCardPlayed &&
+			activeCard.isActive
+		) {
 			console.log("carded landed");
 
 			const disActivatedCard = {

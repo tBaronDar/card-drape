@@ -3,11 +3,10 @@ import { OrbitControls, PerspectiveCamera } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
 import Table from "@/components/table";
 import Card from "@/components/card";
-import { Vector3 } from "three";
+import { Euler, Vector3 } from "three";
 import { useContext, useEffect, useState } from "react";
 
 import styles from "./page.module.css";
-import { redirect } from "next/navigation";
 import { CardDrapeContext } from "@/store/context";
 import PlayedCard from "@/components/played-card";
 
@@ -18,14 +17,23 @@ import PlayedCard from "@/components/played-card";
 export default function MainScene() {
 	const { cards, setCards, activeCard, playedCards } =
 		useContext(CardDrapeContext);
-	useEffect(() => {}, [activeCard, playedCards]);
-	//redirect if in mobile
-	// if (window.screen.width < 738) {
-	// 	return redirect("/mobile");
-	// }
+
 	const [isCameraClicked, setIsCameraClicked] = useState(false);
 	const [cameraManualControl, setCameraManualControls] = useState(false);
+	// let cameraVectors = {
+	// position: new Vector3(0, 3, 6),
+	// rotation: new Euler(Math.PI / -6, 0, 0),
+	// };
+	let cameraZoom1 = false;
+	if (window.screen.width < 738) {
+		// cameraVectors = {
+		// 	position: new Vector3(0, 3, 10),
+		// 	rotation: new Euler(Math.PI / -6, 0, 0),
+		// };
+		cameraZoom1 = true;
+	}
 
+	// const [cameraZoom, setCameraPosition] = useState(cameraZoom1);
 	// console.log(cards);
 
 	return (
@@ -50,10 +58,17 @@ export default function MainScene() {
 				{!cameraManualControl && (
 					<PerspectiveCamera
 						makeDefault
-						position={[0, 3, 6]}
+						position={[0, 3, 6.5]}
 						rotation={[Math.PI / -6, 0, 0]}
 					/>
 				)}
+				{/* {!cameraManualControl && cameraZoom && (
+					<PerspectiveCamera
+						makeDefault
+						position={[0, 3, 6.5]}
+						rotation={[Math.PI / -6, 0, 0]}
+					/>
+				)} */}
 				{/* this is the card that you see */}
 				{activeCard && activeCard.isActive === true && (
 					<Card key={activeCard.name} />
