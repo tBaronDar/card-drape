@@ -58,7 +58,7 @@ export default function MainScene() {
 		// 		Camera Pan
 		// 	</button>
 		// 	<button className={styles.controls}>New Card</button>
-		<Canvas className={styles.canvasMain}>
+		<Canvas style={{ touchAction: "none" }}>
 			<axesHelper args={[12]} />
 			<spotLight position={[0, 5, -5]} />
 			<directionalLight position={[0, 5, 0]} intensity={0.2} />
