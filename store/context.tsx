@@ -80,7 +80,7 @@ export default function CardDrapeContextProvider({
 		}
 	}, [activeCard, cards]);
 
-	console.log(activeCard);
+	// console.log(activeCard);
 	return (
 		<CardDrapeContext.Provider
 			value={{

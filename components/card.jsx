@@ -13,17 +13,17 @@ const targetRotationX = Math.PI / 2;
 // Y-axis: Green pano-kato
 // Z-axis: Blue
 
-const Card = () => {
-	useEffect(() => {
-		const element = document.querySelector("canvas");
-		element.addEventListener("touchmove", (e) => e.preventDefault(), {
-			passive: false,
-		});
+const Card = React.memo(() => {
+	// useEffect(() => {
+	// 	const element = document.querySelector("canvas");
+	// 	element.addEventListener("touchmove", (e) => e.preventDefault(), {
+	// 		passive: false,
+	// 	});
 
-		return () => {
-			element.removeEventListener("touchmove", (e) => e.preventDefault());
-		};
-	}, []);
+	// 	return () => {
+	// 		element.removeEventListener("touchmove", (e) => e.preventDefault());
+	// 	};
+	// }, []);
 
 	const {
 		cards,
@@ -65,6 +65,7 @@ const Card = () => {
 			if (down) {
 				position.current = [x / size.height, 2 + -y / size.width, 5];
 				velocity.current = [mx / 500, my / 500, my / 200];
+				console.log("dragging :", { x, y, mx, my });
 			}
 		},
 		{
@@ -157,6 +158,6 @@ const Card = () => {
 			<meshStandardMaterial map={texture} />
 		</mesh>
 	);
-};
+});
 
 export default Card;
