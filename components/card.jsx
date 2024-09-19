@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useRef, useState, useContext } from "react";
+import React, { useRef, useState, useContext, useEffect } from "react";
 import * as THREE from "three";
 import { useFrame, useLoader, useThree } from "@react-three/fiber";
 import { useDrag } from "@use-gesture/react";
@@ -14,6 +14,17 @@ const targetRotationX = Math.PI / 2;
 // Z-axis: Blue
 
 const Card = () => {
+	useEffect(() => {
+		const element = document.querySelector("canvas");
+		element.addEventListener("touchmove", (e) => e.preventDefault(), {
+			passive: false,
+		});
+
+		return () => {
+			element.removeEventListener("touchmove", (e) => e.preventDefault());
+		};
+	}, []);
+
 	const {
 		cards,
 		setCards,
