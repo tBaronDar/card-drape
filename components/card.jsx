@@ -36,8 +36,13 @@ const Card = ({ dealer, activeCard }) => {
 	}, []);
 
 	const drag = useDrag(
-		({ offset: [x, y], movement: [mx, my], down }) => {
-			// console.log(down, { x, y, mx, my });
+		(state) => {
+			const {
+				offset: [x, y],
+				movement: [mx, my],
+				down,
+			} = state;
+			console.log("log", state);
 			if (down) {
 				position.current = [x / 500, 2 + -y / 500, 5];
 				velocity.current = [mx / 500, my / 500, my / 200];
