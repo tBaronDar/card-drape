@@ -14,11 +14,11 @@ const targetRotationX = Math.PI / 2;
 
 const Card = ({ dealer, activeCard }) => {
 	const cardRef = useRef();
-	const position = useRef([0, 2, 5]);
+	const [position, setPosition] = useState([0, 2, 5]);
 
 	const velocity = useRef([0, 0, 0]);
-	// const { size } = useThree();
-	const [isDraging, setIsDraging] = useState(false);
+	const { size } = useThree();
+	const [isDragging, setIsDragging] = useState(false);
 	const [rotationX, setRotationX] = useState(0);
 	// const [isRotatingY, setIsRotatingY] = useState(false);
 	const [isCardPlayed, setIsCardPlayed] = useState(false);
@@ -36,23 +36,18 @@ const Card = ({ dealer, activeCard }) => {
 	}, []);
 
 	const drag = useDrag(
-		(state) => {
-			const {
-				offset: [x, y],
-				movement: [mx, my],
-				down,
-			} = state;
-			console.log("log", state);
+		({ offset: [x, y], movement: [mx, my], down }) => {
+			setIsDragging(down);
+			// Update position when dragging
 			if (down) {
-				position.current = [x / 500, 2 + -y / 500, 5];
+				setPosition([x / size.height, 2 + -y / size.width, 5]);
 				velocity.current = [mx / 500, my / 500, my / 200];
 			}
-			setIsDraging(down);
 		},
 		{
-			pointer: { touch: true }, //touch same as mouse
-			preventScroll: true, //no srcrolling
-			filterTaps: true, //no taps allowed(mobile)
+			pointer: { touch: true }, // Enable touch
+			preventScroll: true,
+			filterTaps: true,
 		}
 	);
 
@@ -61,7 +56,7 @@ const Card = ({ dealer, activeCard }) => {
 		if (
 			velocity.current[2] !== 0 &&
 			rotationX > -targetRotationX &&
-			!isDraging
+			!isDragging
 		) {
 			const newRotationX = Math.min(rotationX - 0.15, targetRotationX); // rotation
 			setRotationX(newRotationX);
@@ -71,10 +66,10 @@ const Card = ({ dealer, activeCard }) => {
 		}
 
 		//card throw
-		if (!isDraging && position.current[1] > tableHeight) {
-			position.current[0] += velocity.current[0];
-			position.current[1] += velocity.current[1];
-			position.current[2] += velocity.current[2];
+		if (!isDragging && position[1] > tableHeight) {
+			position[0] += velocity.current[0];
+			position[1] += velocity.current[1];
+			position[2] += velocity.current[2];
 
 			velocity.current[0] *= 0.95;
 			velocity.current[1] *= 0.95;
@@ -82,9 +77,9 @@ const Card = ({ dealer, activeCard }) => {
 		}
 
 		//fix card on table
-		if (position.current[1] <= tableHeight) {
+		if (position[1] <= tableHeight) {
 			// reset position to table
-			position.current[1] = tableHeight;
+			position[1] = tableHeight;
 			// stop downward movement
 			velocity.current[1] = 0;
 
@@ -97,15 +92,11 @@ const Card = ({ dealer, activeCard }) => {
 			setIsCardPlayed(true);
 		}
 
-		cardRef.current.position.lerp(new THREE.Vector3(...position.current), 0.2);
+		cardRef.current.position.lerp(new THREE.Vector3(...position), 0.2);
 
-		if (
-			position.current[1] === tableHeight &&
-			isCardPlayed &&
-			activeCard.isActive
-		) {
+		if (position[1] === tableHeight && isCardPlayed && activeCard.isActive) {
 			dealer({
-				position: position.current,
+				position: position,
 				rotation: [
 					cardRef.current.rotation.x,
 					cardRef.current.rotation.y,
@@ -118,7 +109,7 @@ const Card = ({ dealer, activeCard }) => {
 
 	//Math.PI / 8
 	return (
-		<mesh {...drag()} ref={cardRef} position={position.current}>
+		<mesh {...drag()} ref={cardRef} position={position}>
 			<boxGeometry args={[0.2, 0.38, 0.01]} />
 			<meshStandardMaterial color={"black"} />
 		</mesh>

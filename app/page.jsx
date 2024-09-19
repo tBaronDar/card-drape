@@ -53,6 +53,16 @@ export default function MainScene() {
 
 	return (
 		<div>
+			<div
+				{...drag()}
+				style={{
+					width: "100px",
+					height: "100px",
+					background: "red",
+					touchAction: "none",
+				}}>
+				Drag me
+			</div>
 			<h3 className={styles.text}>Dev tools</h3>
 			<button
 				className={styles[isCameraClicked ? "button-clicked" : "controls"]}
@@ -69,17 +79,17 @@ export default function MainScene() {
 				<directionalLight position={[0, 5, 0]} intensity={0.2} />
 				<ambientLight intensity={0.15} />
 				<Table />
-				{/* {cameraManualControl && <OrbitControls position={[0, 4, 6]} />} */}
-				{/* {!cameraManualControl && ( */}
-				<PerspectiveCamera
-					makeDefault
-					position={[0, 3, 6]}
-					rotation={[Math.PI / -6, 0, 0]}
-				/>
-				{/* )} */}
-				{/* this is the card that you see */}
+				{cameraManualControl && <OrbitControls position={[0, 4, 6]} />}
+				{!cameraManualControl && (
+					<PerspectiveCamera
+						makeDefault
+						position={[0, 3, 6]}
+						rotation={[Math.PI / -6, 0, 0]}
+					/>
+				)}
+				// {/* this is the card that you see */}
 				{activeCard && <Card activeCard={activeCard} dealer={dealer} />}
-				{/* this is an array with the cards on the table */}
+				// {/* this is an array with the cards on the table */}
 				{playedCards.length > 0 &&
 					playedCards.map((card) => (
 						<PlayedCard
