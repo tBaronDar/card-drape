@@ -30,6 +30,22 @@ export default function MainScene() {
 		}
 	}, [activeCard, cards]);
 
+	function dealer({ position, rotation }) {
+		const disActivatedCard = {
+			name: activeCard.name,
+			isActive: false,
+			isOnTable: true,
+			cardFinalPosition: position,
+			cardFinalRotation: rotation,
+		};
+
+		playedCards.push(disActivatedCard);
+		cards.shift();
+		setCards(cards);
+		setPlayedCards(playedCards);
+		setActiveCard(null);
+	}
+
 	return (
 		<div>
 			<h3 className={styles.text}>Dev tools</h3>
@@ -58,19 +74,11 @@ export default function MainScene() {
 				)}
 				{/* this is the card that you see */}
 				{activeCard && activeCard.isActive === true && (
-					<Card
-						key={activeCard.name}
-						cards={cards}
-						setCards={setCards}
-						activeCard={activeCard}
-						setActiveCard={setActiveCard}
-						playedCards={playedCards}
-						setPlayedCards={setPlayedCards}
-					/>
+					<Card key={activeCard.name} activeCard={activeCard} dealer={dealer} />
 				)}
 				{/* this is an array with the cards on the table */}
 				{playedCards.length > 0 &&
-					playedCards?.map((card) => (
+					playedCards.map((card) => (
 						<PlayedCard
 							key={card.name}
 							position={card.cardFinalPosition}
