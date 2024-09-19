@@ -60,7 +60,7 @@ export default function MainScene() {
 		// 	<button className={styles.controls}>New Card</button>
 		<Canvas className={styles.canvasMain}>
 			<axesHelper args={[12]} />
-			<spotLight position={[0, 5, -5]} visible />
+			<spotLight position={[0, 5, -5]} />
 			<directionalLight position={[0, 5, 0]} intensity={0.2} />
 			<ambientLight intensity={0.15} />
 			<Table />
