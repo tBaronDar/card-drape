@@ -35,8 +35,8 @@ const Card = ({ dealer, activeCard }) => {
 		},
 		{
 			pointer: { touch: true }, //touch same as mouse
-			preventScroll: true, //no srcrolling
-			filterTaps: true, //no taps allowed(mobile)
+			// preventScroll: true, //no srcrolling
+			// filterTaps: true, //no taps allowed(mobile)
 		}
 	);
 
