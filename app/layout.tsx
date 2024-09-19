@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
-import CardDrapeContextProvider from "@/store/context";
 
 const geistSans = localFont({
 	src: "./fonts/GeistVF.woff",
@@ -26,11 +25,9 @@ export default function RootLayout({
 }>) {
 	return (
 		<html lang="en">
-			<CardDrapeContextProvider>
-				<body className={`${geistSans.variable} ${geistMono.variable}`}>
-					{children}
-				</body>
-			</CardDrapeContextProvider>
+			<body className={`${geistSans.variable} ${geistMono.variable}`}>
+				{children}
+			</body>
 		</html>
 	);
 }

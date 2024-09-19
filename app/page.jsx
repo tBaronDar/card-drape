@@ -5,21 +5,30 @@ import Table from "@/components/table";
 import Card from "@/components/card";
 import { Euler, Vector3 } from "three";
 import { useContext, useEffect, useState } from "react";
+import { dummyCards } from "@/store/context";
 
 import styles from "./page.module.css";
-import { CardDrapeContext } from "@/store/context";
+
 import PlayedCard from "@/components/played-card";
 
-// X-axis: Red dexia
-// Y-axis: Green pano
-// Z-axis: Blue
-
 export default function MainScene() {
-	const { cards, setCards, activeCard, playedCards } =
-		useContext(CardDrapeContext);
-
+	const [cards, setCards] = useState(dummyCards);
+	const [activeCard, setActiveCard] = useState();
+	const [playedCards, setPlayedCards] = useState([]);
 	const [isCameraClicked, setIsCameraClicked] = useState(false);
 	const [cameraManualControl, setCameraManualControls] = useState(false);
+
+	useEffect(() => {
+		if (cards.length > 0) {
+			if (!activeCard) {
+				// dealNewCard
+				const newSelectedCard = cards[0];
+				newSelectedCard.isActive = true;
+
+				setActiveCard(newSelectedCard);
+			}
+		}
+	}, [activeCard, cards]);
 
 	return (
 		<div>
@@ -49,7 +58,15 @@ export default function MainScene() {
 				)}
 				{/* this is the card that you see */}
 				{activeCard && activeCard.isActive === true && (
-					<Card key={activeCard.name} />
+					<Card
+						key={activeCard.name}
+						cards={cards}
+						setCards={setCards}
+						activeCard={activeCard}
+						setActiveCard={setActiveCard}
+						playedCards={playedCards}
+						setPlayedCards={setPlayedCards}
+					/>
 				)}
 				{/* this is an array with the cards on the table */}
 				{playedCards.length > 0 &&
