@@ -28,10 +28,10 @@ const Card = ({ dealer, activeCard }) => {
 			console.log("Touch started", event);
 		};
 
-		window.addEventListener("touchstart", handleTouchStart);
+		window.addEventListener("pointerdown", handleTouchStart);
 
 		return () => {
-			window.removeEventListener("touchstart", handleTouchStart);
+			window.removeEventListener("pointerdown", handleTouchStart);
 		};
 	}, []);
 
