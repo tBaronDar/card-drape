@@ -64,14 +64,14 @@ export default function MainScene() {
 			<directionalLight position={[0, 5, 0]} intensity={0.2} />
 			<ambientLight intensity={0.15} />
 			<Table />
-			{cameraManualControl && <OrbitControls position={[0, 4, 6]} />}
-			{!cameraManualControl && (
-				<PerspectiveCamera
-					makeDefault
-					position={[0, 3, 6]}
-					rotation={[Math.PI / -6, 0, 0]}
-				/>
-			)}
+			{/* {cameraManualControl && <OrbitControls position={[0, 4, 6]} />} */}
+			{/* {!cameraManualControl && ( */}
+			<PerspectiveCamera
+				makeDefault
+				position={[0, 3, 6]}
+				rotation={[Math.PI / -6, 0, 0]}
+			/>
+			{/* )} */}
 			{/* this is the card that you see */}
 			{activeCard && <Card activeCard={activeCard} dealer={dealer} />}
 			{/* this is an array with the cards on the table */}
