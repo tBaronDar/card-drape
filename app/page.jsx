@@ -47,7 +47,7 @@ export default function MainScene() {
 	}
 
 	return (
-		<div>
+		<div className={styles.master}>
 			<h3 className={styles.text}>Dev tools</h3>
 			<button
 				className={styles[isCameraClicked ? "button-clicked" : "controls"]}

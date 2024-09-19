@@ -17,4 +17,9 @@
 canvas {
 	/* This property makes it work on mobile devices */
 	touch-action: none;
+	pointer-events: all;
+}
+
+.master {
+	touch-action: none;
 }
