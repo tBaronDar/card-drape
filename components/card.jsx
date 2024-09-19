@@ -2,7 +2,7 @@
 
 import React, { useRef, useState } from "react";
 import * as THREE from "three";
-import { useFrame, useLoader, useThree } from "@react-three/fiber";
+import { useFrame, useThree } from "@react-three/fiber";
 import { useDrag } from "@use-gesture/react";
 
 const tableHeight = 0;
@@ -21,28 +21,15 @@ const Card = ({ dealer, activeCard }) => {
 	const [isDraging, setIsDraging] = useState(false);
 	const [rotationX, setRotationX] = useState(0);
 	// const [isRotatingY, setIsRotatingY] = useState(false);
-	const [texture, setTexture] = useState(null);
 
 	const [isCardPlayed, setIsCardPlayed] = useState(false);
 
-	const loader = new THREE.TextureLoader();
-	loader.load(
-		"https://card-drape-deck.s3.eu-north-1.amazonaws.com/diamonds-10.jpg", // External texture URL
-		(loadedTexture) => {
-			setTexture(loadedTexture); // Set texture once loaded
-		},
-		undefined,
-		(err) => {
-			console.error("An error occurred while loading the texture", err);
-		}
-	);
-
 	const drag = useDrag(
 		({ offset: [x, y], movement: [mx, my], down }) => {
+			console.log(down);
 			if (down) {
 				position.current = [x / size.height, 2 + -y / size.width, 5];
 				velocity.current = [mx / 500, my / 500, my / 200];
-				console.log("dragging :", { x, y, mx, my });
 			}
 			setIsDraging(down);
 		},
@@ -66,10 +53,6 @@ const Card = ({ dealer, activeCard }) => {
 			//card spin
 			cardRef.current.rotation.z -= 0.35;
 		}
-
-		// if (isRotatingY) {
-		// 	cardRef.current.rotation.z -= 0.35;
-		// }
 
 		//card throw
 		if (!isDraging && position.current[1] > tableHeight) {
@@ -121,7 +104,7 @@ const Card = ({ dealer, activeCard }) => {
 	return (
 		<mesh ref={cardRef} position={position.current} {...drag()}>
 			<boxGeometry args={[0.2, 0.38, 0.01]} />
-			<meshStandardMaterial map={texture} />
+			<meshStandardMaterial color={"black"} />
 		</mesh>
 	);
 };
