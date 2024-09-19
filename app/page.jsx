@@ -6,6 +6,7 @@ import Card from "@/components/card";
 import { Euler, Vector3 } from "three";
 import { useEffect, useState } from "react";
 import { dummyCards } from "@/store/context";
+import { useDrag } from "@use-gesture/react";
 
 import styles from "./page.module.css";
 
@@ -15,8 +16,8 @@ export default function MainScene() {
 	const [cards, setCards] = useState(dummyCards);
 	const [activeCard, setActiveCard] = useState();
 	const [playedCards, setPlayedCards] = useState([]);
-	// const [isCameraClicked, setIsCameraClicked] = useState(false);
-	// const [cameraManualControl, setCameraManualControls] = useState(false);
+	const [isCameraClicked, setIsCameraClicked] = useState(false);
+	const [cameraManualControl, setCameraManualControls] = useState(false);
 
 	useEffect(() => {
 		if (cards.length > 0) {
@@ -46,45 +47,49 @@ export default function MainScene() {
 		setActiveCard(null);
 	}
 
+	const drag = useDrag(({ movement: [mx, my], down }) => {
+		console.log("Touch dragging", { mx, my, down });
+	});
+
 	return (
-		// <div className={styles.master}>
-		// 	<h3 className={styles.text}>Dev tools</h3>
-		// 	<button
-		// 		className={styles[isCameraClicked ? "button-clicked" : "controls"]}
-		// 		onClick={() => {
-		// 			setIsCameraClicked(!isCameraClicked);
-		// 			setCameraManualControls(!cameraManualControl);
-		// 		}}>
-		// 		Camera Pan
-		// 	</button>
-		// 	<button className={styles.controls}>New Card</button>
-		<Canvas style={{ touchAction: "none" }}>
-			<axesHelper args={[12]} />
-			<spotLight position={[0, 5, -5]} />
-			<directionalLight position={[0, 5, 0]} intensity={0.2} />
-			<ambientLight intensity={0.15} />
-			<Table />
-			{/* {cameraManualControl && <OrbitControls position={[0, 4, 6]} />} */}
-			{/* {!cameraManualControl && ( */}
-			<PerspectiveCamera
-				makeDefault
-				position={[0, 3, 6]}
-				rotation={[Math.PI / -6, 0, 0]}
-			/>
-			{/* )} */}
-			{/* this is the card that you see */}
-			{activeCard && <Card activeCard={activeCard} dealer={dealer} />}
-			{/* this is an array with the cards on the table */}
-			{playedCards.length > 0 &&
-				playedCards.map((card) => (
-					<PlayedCard
-						key={card.name}
-						position={card.cardFinalPosition}
-						rotation={card.cardFinalRotation}
-						texture={null}
-					/>
-				))}
-		</Canvas>
-		// </div>
+		<div>
+			<h3 className={styles.text}>Dev tools</h3>
+			<button
+				className={styles[isCameraClicked ? "button-clicked" : "controls"]}
+				onClick={() => {
+					setIsCameraClicked(!isCameraClicked);
+					setCameraManualControls(!cameraManualControl);
+				}}>
+				Camera Pan
+			</button>
+			<button className={styles.controls}>New Card</button>
+			<Canvas style={{ touchAction: "none" }}>
+				<axesHelper args={[12]} />
+				<spotLight position={[0, 5, -5]} />
+				<directionalLight position={[0, 5, 0]} intensity={0.2} />
+				<ambientLight intensity={0.15} />
+				<Table />
+				{/* {cameraManualControl && <OrbitControls position={[0, 4, 6]} />} */}
+				{/* {!cameraManualControl && ( */}
+				<PerspectiveCamera
+					makeDefault
+					position={[0, 3, 6]}
+					rotation={[Math.PI / -6, 0, 0]}
+				/>
+				{/* )} */}
+				{/* this is the card that you see */}
+				{activeCard && <Card activeCard={activeCard} dealer={dealer} />}
+				{/* this is an array with the cards on the table */}
+				{playedCards.length > 0 &&
+					playedCards.map((card) => (
+						<PlayedCard
+							key={card.name}
+							position={card.cardFinalPosition}
+							rotation={card.cardFinalRotation}
+							texture={null}
+						/>
+					))}
+			</Canvas>
+		</div>
 	);
 }
