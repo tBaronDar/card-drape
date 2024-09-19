@@ -1,6 +1,6 @@
 "use client";
 
-import React, { createContext, useEffect, useState } from "react";
+import React, { createContext, useEffect, useState, useMemo } from "react";
 
 export interface CardInterface {
 	name: string;
@@ -83,14 +83,17 @@ export default function CardDrapeContextProvider({
 	// console.log(activeCard);
 	return (
 		<CardDrapeContext.Provider
-			value={{
-				cards,
-				setCards,
-				activeCard,
-				setActiveCard,
-				playedCards,
-				setPlayedCards,
-			}}>
+			value={useMemo(
+				() => ({
+					cards,
+					setCards,
+					activeCard,
+					setActiveCard,
+					playedCards,
+					setPlayedCards,
+				}),
+				[cards, activeCard, playedCards]
+			)}>
 			{children}
 		</CardDrapeContext.Provider>
 	);
