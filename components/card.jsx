@@ -113,7 +113,7 @@ const Card = ({ dealer, activeCard }) => {
 
 	//Math.PI / 8
 	return (
-		<mesh ref={cardRef} position={position.current} {...drag()}>
+		<mesh {...drag()} ref={cardRef} position={position.current}>
 			<boxGeometry args={[0.2, 0.38, 0.01]} />
 			<meshStandardMaterial color={"black"} />
 		</mesh>
