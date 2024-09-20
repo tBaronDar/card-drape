@@ -13,8 +13,14 @@ const targetRotationX = Math.PI / 2;
 // Z-axis: Blue
 
 const Card = React.memo(({ dealer, activeCard }) => {
-	const cardRef = useRef();
-	const [position, setPosition] = useState(new THREE.Vector3(0, 2, 5));
+	const cardRef = useRef({
+		position: new THREE.Vector3(0, 2, 5),
+		rotation: [Math.PI / 1.4, 0, 0],
+	});
+
+	// cardRef.current.position = new THREE.Vector3(0, 2, 5);
+	// cardRef.current.rotation = ;
+	// const [position, setPosition] = useState(new THREE.Vector3(0, 2, 5));
 
 	const velocity = useRef([0, 0, 0]);
 	const { size } = useThree();
@@ -40,7 +46,7 @@ const Card = React.memo(({ dealer, activeCard }) => {
 			setIsDragging(down);
 			// Update position when dragging
 			if (down) {
-				setPosition(position.set(x / size.height, 2 + -y / size.width, 5));
+				cardRef.current.position.set(x / size.height, 2 + -y / size.width, 5);
 				velocity.current = [mx / 500, my / 500, my / 200];
 			}
 		},
@@ -67,10 +73,10 @@ const Card = React.memo(({ dealer, activeCard }) => {
 		}
 
 		//card throw
-		if (!isDragging && position.y > tableHeight) {
-			position.x += velocity.current[0];
-			position.y += velocity.current[1];
-			position.z += velocity.current[2];
+		if (!isDragging && cardRef.current.position.y > tableHeight) {
+			cardRef.current.position.x += velocity.current[0];
+			cardRef.current.position.y += velocity.current[1];
+			cardRef.current.position.z += velocity.current[2];
 
 			velocity.current[0] *= 0.95;
 			velocity.current[1] *= 0.95;
@@ -78,9 +84,9 @@ const Card = React.memo(({ dealer, activeCard }) => {
 		}
 
 		//fix card on table
-		if (position.y <= tableHeight) {
+		if (cardRef.current.position.y <= tableHeight) {
 			// reset position to table
-			position.y = tableHeight;
+			cardRef.current.position.y = tableHeight;
 			// stop downward movement
 			velocity.current[1] = 0;
 
@@ -93,11 +99,15 @@ const Card = React.memo(({ dealer, activeCard }) => {
 			setIsCardPlayed(true);
 		}
 
-		cardRef.current.position.lerp(position, 0.2);
+		cardRef.current.position.lerp(cardRef.current.position, 0.2);
 
-		if (position.y === tableHeight && isCardPlayed && activeCard.isActive) {
+		if (
+			cardRef.current.position.y === tableHeight &&
+			isCardPlayed &&
+			activeCard.isActive
+		) {
 			dealer({
-				position: position,
+				position: cardRef.current.position,
 				rotation: [
 					cardRef.current.rotation.x,
 					cardRef.current.rotation.y,
@@ -107,15 +117,15 @@ const Card = React.memo(({ dealer, activeCard }) => {
 			console.log("carded landed");
 		}
 	});
-	console.log(position);
-	console.log(cardRef.current);
+	console.log(cardRef.current.position);
+	// console.log(cardRef.current);
 
 	//Math.PI / 8
 	return (
 		<mesh
 			{...drag()}
 			ref={cardRef}
-			position={position}
+			position={new THREE.Vector3(0, 2, 5)}
 			rotation={[Math.PI / 1.4, 0, 0]}>
 			<boxGeometry args={[0.2, 0.38, 0.01]} />
 			<meshStandardMaterial color={"black"} />
