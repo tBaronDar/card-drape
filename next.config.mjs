@@ -1,4 +1,4 @@
 /** @type {import('next').NextConfig} */
-const nextConfig = { transpilePackages: ["three"] };
+const nextConfig = {};
 
 export default nextConfig;

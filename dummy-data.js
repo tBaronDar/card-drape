@@ -1,7 +1,5 @@
 "use client";
 
-import React, { createContext, useEffect, useState, useMemo } from "react";
-
 export const dummyCards = [
 	{
 		name: "tenDiamonds",
@@ -28,8 +26,3 @@ export const dummyCards = [
 		setCardFinalPosition: () => {},
 	},
 ];
-
-export default function CardDrapeContextProvider({ children }) {
-	// console.log(activeCard);
-	return;
-}

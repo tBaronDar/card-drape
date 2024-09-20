@@ -3,10 +3,8 @@ import { OrbitControls, PerspectiveCamera } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
 import Table from "@/components/table";
 import Card from "@/components/card";
-import { Euler, Vector3 } from "three";
 import { useEffect, useState } from "react";
-import { dummyCards } from "@/store/context";
-import { useDrag } from "@use-gesture/react";
+import { dummyCards } from "@/dummy-data";
 
 import styles from "./page.module.css";
 
@@ -47,32 +45,20 @@ export default function MainScene() {
 		setActiveCard(null);
 	}
 
-	const drag = useDrag(({ movement: [mx, my], down }) => {
-		console.log("Touch dragging", { mx, my, down });
-	});
-
 	return (
-		<div>
-			<div
-				{...drag()}
-				style={{
-					width: "100px",
-					height: "100px",
-					background: "red",
-					touchAction: "none",
-				}}>
-				Drag me
+		<div className={styles.master}>
+			<div className={styles.controls}>
+				<h3 className={styles.text}>Dev tools</h3>
+				<button
+					className={styles[isCameraClicked ? "button-clicked" : "button"]}
+					onClick={() => {
+						setIsCameraClicked(!isCameraClicked);
+						setCameraManualControls(!cameraManualControl);
+					}}>
+					Camera Pan
+				</button>
+				<button className={styles.button}>New Card</button>
 			</div>
-			<h3 className={styles.text}>Dev tools</h3>
-			<button
-				className={styles[isCameraClicked ? "button-clicked" : "controls"]}
-				onClick={() => {
-					setIsCameraClicked(!isCameraClicked);
-					setCameraManualControls(!cameraManualControl);
-				}}>
-				Camera Pan
-			</button>
-			<button className={styles.controls}>New Card</button>
 			<Canvas style={{ touchAction: "none" }}>
 				<axesHelper args={[12]} />
 				<spotLight position={[0, 5, -5]} />
@@ -87,9 +73,9 @@ export default function MainScene() {
 						rotation={[Math.PI / -6, 0, 0]}
 					/>
 				)}
-				// {/* this is the card that you see */}
+				{/* this is the card that you see */}
 				{activeCard && <Card activeCard={activeCard} dealer={dealer} />}
-				// {/* this is an array with the cards on the table */}
+				{/* this is an array with the cards on the table */}
 				{playedCards.length > 0 &&
 					playedCards.map((card) => (
 						<PlayedCard

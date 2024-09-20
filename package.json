@@ -11,17 +11,10 @@
   "dependencies": {
     "@react-three/drei": "^9.112.0",
     "@react-three/fiber": "^8.17.7",
-    "@types/three": "^0.168.0",
     "@use-gesture/react": "^10.3.1",
-    "next": "14.2.9",
+    "next": "14.2.13",
     "react": "^18",
     "react-dom": "^18",
     "three": "^0.168.0"
-  },
-  "devDependencies": {
-    "@types/node": "^20",
-    "@types/react": "^18",
-    "@types/react-dom": "^18",
-    "typescript": "^5"
   }
 }

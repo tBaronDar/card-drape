@@ -1,4 +1,4 @@
-.controls {
+.button {
 	height: 3rem;
 	width: 5rem;
 }
@@ -20,5 +20,12 @@
 }
 
 .master {
-	touch-action: none;
+	position: relative;
+}
+
+.controls {
+	height: fit-content;
+	width: fit-content;
+	position: absolute;
+	z-index: 100;
 }
