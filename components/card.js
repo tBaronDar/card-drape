@@ -14,7 +14,7 @@ const targetRotationX = Math.PI / 2;
 
 const Card = ({ dealer, activeCard }) => {
 	const cardRef = useRef();
-	const [position, setPosition] = useState([0, 2, 5]);
+	const [position, setPosition] = useState(new THREE.Vector3(0, 2, 5));
 
 	const velocity = useRef([0, 0, 0]);
 	const { size } = useThree();
@@ -40,7 +40,7 @@ const Card = ({ dealer, activeCard }) => {
 			setIsDragging(down);
 			// Update position when dragging
 			if (down) {
-				setPosition([x / size.height, 2 + -y / size.width, 5]);
+				setPosition(position.set(x / size.height, 2 + -y / size.width, 5));
 				velocity.current = [mx / 500, my / 500, my / 200];
 			}
 		},
@@ -77,9 +77,9 @@ const Card = ({ dealer, activeCard }) => {
 		}
 
 		//fix card on table
-		if (position[1] <= tableHeight) {
+		if (position.y <= tableHeight) {
 			// reset position to table
-			position[1] = tableHeight;
+			position.y = tableHeight;
 			// stop downward movement
 			velocity.current[1] = 0;
 
@@ -92,9 +92,9 @@ const Card = ({ dealer, activeCard }) => {
 			setIsCardPlayed(true);
 		}
 
-		cardRef.current.position.lerp(new THREE.Vector3(...position), 0.2);
+		// cardRef.current.position.lerp(new THREE.Vector3(...position), 0.2);
 
-		if (position[1] === tableHeight && isCardPlayed && activeCard.isActive) {
+		if (position.y === tableHeight && isCardPlayed && activeCard.isActive) {
 			dealer({
 				position: position,
 				rotation: [
@@ -106,6 +106,8 @@ const Card = ({ dealer, activeCard }) => {
 			console.log("carded landed");
 		}
 	});
+	console.log(position);
+	console.log(cardRef.current);
 
 	//Math.PI / 8
 	return (

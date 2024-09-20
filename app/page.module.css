@@ -16,7 +16,6 @@
 
 .canvasMain {
 	/* This property makes it work on mobile devices */
-	touch-action: none;
 }
 
 .master {
