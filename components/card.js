@@ -66,7 +66,7 @@ const Card = ({ dealer, activeCard }) => {
 		}
 
 		//card throw
-		if (!isDragging && position[1] > tableHeight) {
+		if (!isDragging && position.y > tableHeight) {
 			position[0] += velocity.current[0];
 			position[1] += velocity.current[1];
 			position[2] += velocity.current[2];
