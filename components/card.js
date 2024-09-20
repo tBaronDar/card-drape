@@ -92,7 +92,7 @@ const Card = ({ dealer, activeCard }) => {
 			setIsCardPlayed(true);
 		}
 
-		// cardRef.current.position.lerp(new THREE.Vector3(...position), 0.2);
+		cardRef.current.position.lerp(position, 0.2);
 
 		if (position.y === tableHeight && isCardPlayed && activeCard.isActive) {
 			dealer({
