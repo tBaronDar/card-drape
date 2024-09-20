@@ -45,7 +45,8 @@ const Card = ({ dealer, activeCard }) => {
 			}
 		},
 		{
-			pointer: { touch: true }, // Enable touch
+			// Enable touch
+			// pointer: { touch: true, mouse: true },
 			preventScroll: true,
 			filterTaps: true,
 		}
