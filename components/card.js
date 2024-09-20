@@ -20,7 +20,7 @@ const Card = ({ dealer, activeCard }) => {
 	const { size } = useThree();
 	const [isDragging, setIsDragging] = useState(false);
 	const [rotationX, setRotationX] = useState(0);
-	// const [isRotatingY, setIsRotatingY] = useState(false);
+	const [isRotatingY, setIsRotatingY] = useState(false);
 	const [isCardPlayed, setIsCardPlayed] = useState(false);
 
 	useEffect(() => {
@@ -68,9 +68,9 @@ const Card = ({ dealer, activeCard }) => {
 
 		//card throw
 		if (!isDragging && position.y > tableHeight) {
-			position[0] += velocity.current[0];
-			position[1] += velocity.current[1];
-			position[2] += velocity.current[2];
+			position.x += velocity.current[0];
+			position.y += velocity.current[1];
+			position.z += velocity.current[2];
 
 			velocity.current[0] *= 0.95;
 			velocity.current[1] *= 0.95;
@@ -112,7 +112,11 @@ const Card = ({ dealer, activeCard }) => {
 
 	//Math.PI / 8
 	return (
-		<group {...drag()} ref={cardRef} position={position}>
+		<group
+			{...drag()}
+			ref={cardRef}
+			position={position}
+			rotation={[Math.PI / 1.4, 0, 0]}>
 			<mesh>
 				<boxGeometry args={[0.2, 0.38, 0.01]} />
 				<meshStandardMaterial color={"black"} />
