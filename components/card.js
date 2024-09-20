@@ -12,7 +12,7 @@ const targetRotationX = Math.PI / 2;
 // Y-axis: Green pano-kato
 // Z-axis: Blue
 
-const Card = ({ dealer, activeCard }) => {
+const Card = React.memo(({ dealer, activeCard }) => {
 	const cardRef = useRef();
 	const [position, setPosition] = useState(new THREE.Vector3(0, 2, 5));
 
@@ -23,17 +23,17 @@ const Card = ({ dealer, activeCard }) => {
 	const [isRotatingY, setIsRotatingY] = useState(false);
 	const [isCardPlayed, setIsCardPlayed] = useState(false);
 
-	useEffect(() => {
-		const handleTouchStart = (event) => {
-			console.log("Touch started", event);
-		};
+	// useEffect(() => {
+	// 	const handleTouchStart = (event) => {
+	// 		console.log("Touch started", event);
+	// 	};
 
-		window.addEventListener("pointerdown", handleTouchStart);
+	// 	window.addEventListener("pointerdown", handleTouchStart);
 
-		return () => {
-			window.removeEventListener("pointerdown", handleTouchStart);
-		};
-	}, []);
+	// 	return () => {
+	// 		window.removeEventListener("pointerdown", handleTouchStart);
+	// 	};
+	// }, []);
 
 	const drag = useDrag(
 		({ offset: [x, y], movement: [mx, my], down }) => {
@@ -121,6 +121,6 @@ const Card = ({ dealer, activeCard }) => {
 			<meshStandardMaterial color={"black"} />
 		</mesh>
 	);
-};
+});
 
 export default Card;
