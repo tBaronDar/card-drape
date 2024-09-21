@@ -5,6 +5,7 @@ import Table from "@/components/table";
 import Card from "@/components/card";
 import { useEffect, useState } from "react";
 import { dummyCards } from "@/dummy-data";
+import { Physics } from "@react-three/cannon";
 
 import styles from "./page.module.css";
 
@@ -60,31 +61,37 @@ export default function MainScene() {
 				<button className={styles.button}>New Card</button>
 			</div>
 			<Canvas style={{ touchAction: "none" }}>
-				<axesHelper args={[12]} />
-				<spotLight position={[0, 5, -5]} />
-				<directionalLight position={[0, 5, 0]} intensity={0.2} />
-				<ambientLight intensity={0.15} />
-				<Table />
-				{cameraManualControl && <OrbitControls position={[0, 4, 6]} />}
-				{!cameraManualControl && (
-					<PerspectiveCamera
-						makeDefault
-						position={[0, 3, 6]}
-						rotation={[Math.PI / -6, 0, 0]}
-					/>
-				)}
-				{/* this is the card that you see */}
-				{activeCard && <Card activeCard={activeCard} dealer={dealer} />}
-				{/* this is an array with the cards on the table */}
-				{playedCards.length > 0 &&
-					playedCards.map((card) => (
-						<PlayedCard
-							key={card.name}
-							position={card.cardFinalPosition}
-							rotation={card.cardFinalRotation}
-							texture={null}
+				<Physics
+					gravity={[0, -9.8, 0]}
+					allowSleep={false}
+					iterations={12}
+					broadphase="SAP">
+					<axesHelper args={[12]} />
+					<spotLight position={[0, 5, -5]} />
+					<directionalLight position={[0, 5, 0]} intensity={0.2} />
+					<ambientLight intensity={0.15} />
+					<Table />
+					{cameraManualControl && <OrbitControls position={[0, 4, 6]} />}
+					{!cameraManualControl && (
+						<PerspectiveCamera
+							makeDefault
+							position={[0, 3, 6]}
+							rotation={[Math.PI / -6, 0, 0]}
 						/>
-					))}
+					)}
+					{/* this is the card that you see */}
+					{activeCard && <Card activeCard={activeCard} dealer={dealer} />}
+					{/* this is an array with the cards on the table */}
+					{playedCards.length > 0 &&
+						playedCards.map((card) => (
+							<PlayedCard
+								key={card.name}
+								position={card.cardFinalPosition}
+								rotation={card.cardFinalRotation}
+								texture={null}
+							/>
+						))}
+				</Physics>
 			</Canvas>
 		</div>
 	);
