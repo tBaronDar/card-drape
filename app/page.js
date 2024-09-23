@@ -65,7 +65,8 @@ export default function MainScene() {
 				<Physics
 					gravity={[0, -9.8, 0]}
 					allowSleep={false}
-					iterations={12}
+					iterations={10}
+					tolerance={0.001}
 					broadphase="SAP">
 					<axesHelper args={[12]} />
 					<spotLight position={[0, 5, -5]} />
