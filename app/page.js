@@ -10,6 +10,7 @@ import { Physics } from "@react-three/cannon";
 import styles from "./page.module.css";
 
 import PlayedCard from "@/components/played-card";
+import TablePlane from "@/components/table-collision-plane";
 
 export default function MainScene() {
 	const [cards, setCards] = useState(dummyCards);
@@ -70,6 +71,7 @@ export default function MainScene() {
 					<spotLight position={[0, 5, -5]} />
 					<directionalLight position={[0, 5, 0]} intensity={0.2} />
 					<ambientLight intensity={0.15} />
+					<TablePlane />
 					<Table />
 					{cameraManualControl && <OrbitControls position={[0, 4, 6]} />}
 					{!cameraManualControl && (

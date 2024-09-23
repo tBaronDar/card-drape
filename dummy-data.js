@@ -7,7 +7,6 @@ export const dummyCards = [
 		isOnTable: false,
 		cardFinalPosition: [0, 2, 5],
 		cardFinalRotation: [0, 0, 0],
-		setCardFinalPosition: () => {},
 	},
 	{
 		name: "twoHearts",
@@ -15,7 +14,6 @@ export const dummyCards = [
 		isOnTable: false,
 		cardFinalPosition: [0, 2, 5],
 		cardFinalRotation: [0, 0, 0],
-		setCardFinalPosition: () => {},
 	},
 	{
 		name: "oneSpades",
@@ -23,6 +21,5 @@ export const dummyCards = [
 		isOnTable: false,
 		cardFinalPosition: [0, 2, 5],
 		cardFinalRotation: [0, 0, 0],
-		setCardFinalPosition: () => {},
 	},
 ];
