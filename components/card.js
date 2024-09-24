@@ -1,101 +1,96 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useBox } from "@react-three/cannon";
 import { useFrame } from "@react-three/fiber";
-import { useDrag } from "@use-gesture/react";
 import * as THREE from "three";
 
 const startingPosition = [0, 2, 5];
-const Card = ({ dealer, activeCard }) => {
-	const [isDragging, setIsDragging] = useState(false);
-	const [direction, setDirection] = useState([0, 0]);
-	const [isImpulseApplied, setIsImpulseApplied] = useState(false);
-	const [velocity, setVelocity] = useState([0, 0, 0]);
+const Card = () => {
+  const [isDragging, setIsDragging] = useState(false);
+  const [dragStart, setDragStart] = useState([0, 0]);
+  const [dragCurrent, setDragCurrent] = useState([0, 0]);
+  const [isImpulseApplied, setIsImpulseApplied] = useState(false);
 
-	// Setup physics for the card using useBox from react-three-cannon
-	const [ref, api] = useBox(() => ({
-		mass: 0.1, //
-		position: startingPosition, // Starting position
-		rotation: [0, 0, 0], // Starting rotation
-		args: [0.2, 0.38, 0.01], // Dimensions of the box (x, y, z)
-		onCollide: (e) => {
-			console.log("Collided with", e.body);
-		},
-	}));
+  // Setup physics for the card using useBox from react-three-cannon
+  const [ref, api] = useBox(() => ({
+    mass: 0.1,
+    position: startingPosition,
+    rotation: [0, 0, 0],
+    args: [0.2, 0.38, 0.01],
+  }));
 
-	useEffect(() => {
-		const unsubscribeVelocity = api.velocity.subscribe((v) => setVelocity(v));
+  // Handle drag start (pointer down)
+  const handlePointerDown = (event) => {
+    setIsDragging(true);
+    setIsImpulseApplied(false);
+    // Store the starting drag position
+    setDragStart([event.clientX, event.clientY]);
+  };
 
-		return () => unsubscribeVelocity();
-	}, [api]);
+  // Handle dragging (pointer move)
+  const handlePointerMove = (event) => {
+    if (!isDragging) return;
+    // Update the current drag position
+    const newDragCurrent = [event.clientX, event.clientY];
+    setDragCurrent(newDragCurrent);
 
-	const handlePointerDown = () => setIsDragging(true);
-	const handlePointerUp = () => setIsDragging(false);
+    // Calculate the new X-Y Z constant
+    const deltaX = (dragCurrent[0] - dragStart[0]) / window.innerWidth;
+    const deltaY = -(dragCurrent[1] - dragStart[1]) / window.innerHeight;
 
-	const handlePointerMove = (event) => {
-		if (!isDragging) return;
+    api.position.set(deltaX * 6, 2 + deltaY * 6, startingPosition[2]); // Adjust scale as needed
+  };
 
-		api.velocity.set(0, 0, 0);
-		const { offsetX, offsetY } = event;
-		const x = (offsetX / window.innerWidth) * 2 - 1;
-		const y = -(offsetY / window.innerHeight) * 2 + 1;
+  // Handle drag release (pointer up)
+  const handlePointerUp = (event) => {
+    setIsDragging(false);
 
-		api.position.set(x * 5, y * 5, 5); // Adjust
-		console.log("dragging");
-	};
+    // Calculate impulse based on the Y-axis drag velocity
+    const dragVelocityX = (dragCurrent[0] - dragStart[0]) / window.innerWidth;
+    const dragVelocityY = (dragCurrent[1] - dragStart[1]) / window.innerHeight;
+    const impulseStrength = [dragVelocityX * 10, dragVelocityY * 10]; // Adjust this factor as needed for flick strength
 
-	// Use frame loop to apply rotation and motion when not dragging
-	useFrame(() => {
-		const isMoving = direction[0] !== 0 || direction[1] !== 0;
+    // Apply impulse to the card in the Z direction (simulating a flick)
+    api.applyImpulse([impulseStrength[0], 0, impulseStrength[1]], [0, 0, 0]);
+    setIsImpulseApplied(true);
+  };
 
-		// console.log(direction);
-		// if (!isDragging && !isImpulseApplied) {
-		// 	setIsImpulseApplied(true);
-		// 	console.log([direction[0] / 100, direction[1] / 120]);
-		// 	api.applyImpulse(
-		// 		[direction[0] / 150, -direction[1] / 1000, direction[1] / 150],
-		// 		[0, 0, 0]
-		// 	);
-		// 	// console.log((direction[1] * 2) / 100);
-		// }
+  // Frame update for any additional effects (like resetting)
+  useFrame(() => {
+    if (isImpulseApplied) {
+      // Optionally reset after flicking
+      api.rotation.set(-Math.PI / 2, 0, 0);
+    }
 
-		if (isImpulseApplied) {
-			api.rotation.set(-Math.PI / 2, 0, 0);
-			api.applyTorque([0, -direction[1] / 100, 0]);
-		}
+    if (!isDragging && !isImpulseApplied) {
+      api.position.set(0, 2, 5);
+      api.velocity.set(0, 0, 0);
+    }
+  });
 
-		if (!isImpulseApplied && isDragging) {
-			api.velocity.set(0, 0, 0);
-		}
-		if (!isImpulseApplied && !isDragging) {
-			api.position.set(0, 2, 5);
-			api.rotation.set(-Math.PI / 6, 0, 0);
-			api.velocity.set(0, 0, 0);
-			console.log("hovering");
-		}
-	});
+  const materials = [
+    new THREE.MeshStandardMaterial({ color: "grey" }),
+    new THREE.MeshStandardMaterial({ color: "grey" }),
+    new THREE.MeshStandardMaterial({ color: "grey" }),
+    new THREE.MeshStandardMaterial({ color: "grey" }),
+    new THREE.MeshStandardMaterial({ color: "red" }),
+    new THREE.MeshStandardMaterial({ color: "black" }),
+  ];
 
-	const materials = [
-		new THREE.MeshStandardMaterial({ color: "grey" }),
-		new THREE.MeshStandardMaterial({ color: "grey" }),
-		new THREE.MeshStandardMaterial({ color: "grey" }),
-		new THREE.MeshStandardMaterial({ color: "grey" }),
-		new THREE.MeshStandardMaterial({ color: "red" }),
-		new THREE.MeshStandardMaterial({ color: "black" }),
-	];
-	return (
-		<mesh
-			ref={ref}
-			onPointerDown={handlePointerDown}
-			onPointerUp={handlePointerUp}
-			onPointerMove={handlePointerMove}
-			castShadow
-			receiveShadow
-			material={materials}>
-			<boxGeometry args={[0.2, 0.38, 0.01]} />
-		</mesh>
-	);
+  return (
+    <mesh
+      ref={ref}
+      onPointerDown={handlePointerDown}
+      onPointerUp={handlePointerUp}
+      onPointerMove={handlePointerMove}
+      castShadow
+      receiveShadow
+      material={materials}
+    >
+      <boxGeometry args={[0.2, 0.38, 0.01]} />
+    </mesh>
+  );
 };
 
 export default Card;
