@@ -11,6 +11,7 @@ const Card = () => {
   const [dragStart, setDragStart] = useState([0, 0]);
   const [dragCurrent, setDragCurrent] = useState([0, 0]);
   const [isImpulseApplied, setIsImpulseApplied] = useState(false);
+  const [isOnTable, setIsOnTable] = useState(false);
 
   // Setup physics for the card using useBox from react-three-cannon
   const [ref, api] = useBox(() => ({
@@ -18,6 +19,10 @@ const Card = () => {
     position: startingPosition,
     rotation: [0, 0, 0],
     args: [0.2, 0.38, 0.01],
+    onCollide: (e) => {
+      console.log("collision");
+      setIsOnTable(true);
+    },
   }));
 
   // Handle drag start (pointer down)
@@ -49,10 +54,12 @@ const Card = () => {
     // Calculate impulse based on the Y-axis drag velocity
     const dragVelocityX = (dragCurrent[0] - dragStart[0]) / window.innerWidth;
     const dragVelocityY = (dragCurrent[1] - dragStart[1]) / window.innerHeight;
-    const impulseStrength = [dragVelocityX * 10, dragVelocityY * 10]; // Adjust this factor as needed for flick strength
+    api.mass.set(1);
+    const impulseStrength = [dragVelocityX * 100, dragVelocityY * 100]; // Adjust this factor as needed for flick strength
 
     // Apply impulse to the card in the Z direction (simulating a flick)
     api.applyImpulse([impulseStrength[0], 0, impulseStrength[1]], [0, 0, 0]);
+    api.rotation.set(-Math.PI / 2, 0, 0);
     setIsImpulseApplied(true);
   };
 
@@ -60,12 +67,16 @@ const Card = () => {
   useFrame(() => {
     if (isImpulseApplied) {
       // Optionally reset after flicking
-      api.rotation.set(-Math.PI / 2, 0, 0);
+
+      api.applyTorque([0, -1, 0]);
     }
 
     if (!isDragging && !isImpulseApplied) {
       api.position.set(0, 2, 5);
       api.velocity.set(0, 0, 0);
+    }
+
+    if (isOnTable) {
     }
   });
 
