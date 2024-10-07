@@ -49,24 +49,26 @@ export default function MainScene() {
 
 	return (
 		<div className={styles.master}>
-			<div className={styles.controls}>
-				<h3 className={styles.text}>Dev tools</h3>
-				<button
-					className={styles[isCameraClicked ? "button-clicked" : "button"]}
-					onClick={() => {
-						setIsCameraClicked(!isCameraClicked);
-						setCameraManualControls(!cameraManualControl);
-					}}>
-					Camera Pan
-				</button>
-				<button className={styles.button}>New Card</button>
+			<div className={styles["side-area-left"]}>
+				<div>
+					<h3>Dev tools</h3>
+					<button
+						className={styles[isCameraClicked ? "button-clicked" : "button"]}
+						onClick={() => {
+							setIsCameraClicked(!isCameraClicked);
+							setCameraManualControls(!cameraManualControl);
+						}}>
+						Camera Pan
+					</button>
+					<button className={styles.button}>New Card</button>
+				</div>
 			</div>
 			<div className={styles["game-area"]}>
 				<Canvas style={{ touchAction: "none" }}>
 					<Physics
 						gravity={[0, -9.8, 0]}
 						allowSleep={false}
-						iterations={10}
+						iterations={16}
 						tolerance={0.001}
 						broadphase="SAP">
 						<axesHelper args={[12]} />
@@ -78,7 +80,7 @@ export default function MainScene() {
 						{cameraManualControl && <OrbitControls position={[0, 4, 7]} />}
 						{!cameraManualControl && (
 							<PerspectiveCamera
-								fov={60}
+								fov={55}
 								makeDefault
 								position={[0, 3, 6]}
 								rotation={[Math.PI / -6, 0, 0]}
@@ -98,6 +100,7 @@ export default function MainScene() {
 							))}
 					</Physics>
 				</Canvas>
+				<div className={styles["side-area-right"]}></div>
 			</div>
 		</div>
 	);

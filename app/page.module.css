@@ -1,17 +1,17 @@
 .master {
-	position: relative;
 	display: grid;
-	grid-template-columns: auto 70% auto;
+	grid-template-columns: auto 720px auto;
+	overflow: hidden;
+}
+
+.controls {
+	height: fit-content;
+	width: fit-content;
 }
 
 .button {
 	height: 3rem;
 	width: 5rem;
-}
-
-.text {
-	height: fit-content;
-	width: fit-content;
 }
 
 .button-clicked {
@@ -20,36 +20,43 @@
 	background-color: blue;
 }
 
-.controls {
-	height: fit-content;
-	width: fit-content;
-	position: absolute;
-	z-index: 1;
-}
-
 .game-area {
 	grid-column: 2;
-	height: 760px;
-	width: 1000px;
+	height: 720px;
+	width: 720px;
+	overflow: hidden;
+}
+
+.side-area-right {
+	grid-column: 1;
+	width: 100%;
+	height: 100%;
+}
+.side-area-right {
+	grid-column: 3;
+	width: 100%;
+	height: 100%;
 }
 
 @media (max-width: 768px) {
 	.master {
-		position: relative;
-		display: grid;
-		grid-template-rows: auto 90%;
+		display: flex;
+		overflow: hidden;
+		/* grid-template-rows: auto 90%; */
 	}
 
-	.controls {
-		height: fit-content;
-		width: fit-content;
-		position: absolute;
-		z-index: 1;
-		grid-row: 1;
-	}
 	.game-area {
-		grid-row: 2;
-		height: 760px;
-		width: 380px;
+		/* grid-row: 2; */
+		height: 320px;
+		width: 320px;
+		margin-left: auto;
+		margin-right: auto;
+	}
+
+	.side-area-left {
+		display: none;
+	}
+	.side-area-right {
+		display: none;
 	}
 }
