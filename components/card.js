@@ -4,10 +4,9 @@ import React, { useEffect, useState } from "react";
 import { useBox } from "@react-three/cannon";
 import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
-import { size } from "three";
 
 const startingPosition = [0, 2, 5];
-const Card = () => {
+const Card = ({ canvasSize }) => {
 	const [isDragging, setIsDragging] = useState(false);
 	const [dragStart, setDragStart] = useState([0, 0]);
 	const [dragCurrent, setDragCurrent] = useState([0, 0]);
@@ -42,8 +41,15 @@ const Card = () => {
 		setDragCurrent(newDragCurrent);
 
 		// Calculate the new X-Y Z constant
-		const deltaX = (dragCurrent[0] - dragStart[0]) / window.innerWidth;
-		const deltaY = -(dragCurrent[1] - dragStart[1]) / window.innerHeight;
+		let deltaX = (dragCurrent[0] - dragStart[0]) / canvasSize[0];
+		let deltaY = -(dragCurrent[1] - dragStart[1]) / canvasSize[1];
+
+		// Clamp the delta values
+		const maxDelta = 10;
+		const minDelta = -10;
+
+		deltaX = Math.min(Math.max(deltaX, minDelta), maxDelta);
+		deltaY = Math.min(Math.max(deltaY, minDelta), maxDelta);
 
 		api.position.set(deltaX * 6, 2 + deltaY * 6, startingPosition[2]); // Adjust scale as needed
 	};
@@ -53,8 +59,8 @@ const Card = () => {
 		setIsDragging(false);
 
 		// Calculate impulse based on the Y-axis drag velocity
-		const dragVelocityX = (dragCurrent[0] - dragStart[0]) / window.innerWidth;
-		const dragVelocityY = (dragCurrent[1] - dragStart[1]) / window.innerHeight;
+		const dragVelocityX = (dragCurrent[0] - dragStart[0]) / canvasSize[0];
+		const dragVelocityY = (dragCurrent[1] - dragStart[1]) / canvasSize[1];
 		api.mass.set(1);
 		const impulseStrength = [dragVelocityX * 100, dragVelocityY * 100]; // Adjust this factor as needed for flick strength
 

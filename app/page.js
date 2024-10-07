@@ -18,8 +18,14 @@ export default function MainScene() {
 	const [playedCards, setPlayedCards] = useState([]);
 	const [isCameraClicked, setIsCameraClicked] = useState(false);
 	const [cameraManualControl, setCameraManualControls] = useState(false);
+	const [FOV, setFOV] = useState(55);
+	const [canvasSize, setCanvasize] = useState([720, 720]);
 
 	useEffect(() => {
+		if (window.width < 768) {
+			setFOV(50);
+			setCanvasize([360, 360]);
+		}
 		if (cards.length > 0) {
 			if (!activeCard) {
 				// dealNewCard
@@ -80,14 +86,20 @@ export default function MainScene() {
 						{cameraManualControl && <OrbitControls position={[0, 4, 7]} />}
 						{!cameraManualControl && (
 							<PerspectiveCamera
-								fov={55}
+								fov={FOV}
 								makeDefault
 								position={[0, 3, 6]}
 								rotation={[Math.PI / -6, 0, 0]}
 							/>
 						)}
 						{/* this is the card that you see */}
-						{activeCard && <Card activeCard={activeCard} dealer={dealer} />}
+						{activeCard && (
+							<Card
+								activeCard={activeCard}
+								dealer={dealer}
+								canvasSize={canvasSize}
+							/>
+						)}
 						{/* this is an array with the cards on the table */}
 						{playedCards.length > 0 &&
 							playedCards.map((card) => (
