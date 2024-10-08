@@ -20,6 +20,7 @@ export default function MainScene() {
 	const [cameraManualControl, setCameraManualControls] = useState(false);
 	const [FOV, setFOV] = useState(55);
 	const [canvasSize, setCanvasize] = useState([720, 720]);
+	const [gravity, setGravity] = useState([0, 0, 0]);
 
 	useEffect(() => {
 		if (window.width < 768) {
@@ -36,6 +37,10 @@ export default function MainScene() {
 			}
 		}
 	}, [activeCard, cards]);
+
+	function activateGravity() {
+		setGravity([0, -9.8, 0]);
+	}
 
 	function dealer({ position, rotation }) {
 		const disActivatedCard = {
@@ -55,26 +60,25 @@ export default function MainScene() {
 
 	return (
 		<div className={styles.master}>
-			<div className={styles["side-area-left"]}>
-				<div>
-					<h3>Dev tools</h3>
-					<button
-						className={styles[isCameraClicked ? "button-clicked" : "button"]}
-						onClick={() => {
-							setIsCameraClicked(!isCameraClicked);
-							setCameraManualControls(!cameraManualControl);
-						}}>
-						Camera Pan
-					</button>
-					<button className={styles.button}>New Card</button>
-				</div>
+			<div className={styles.controls}>
+				<h3>Dev tools</h3>
+				<button
+					className={styles[isCameraClicked ? "button-clicked" : "button"]}
+					onClick={() => {
+						setIsCameraClicked(!isCameraClicked);
+						setCameraManualControls(!cameraManualControl);
+					}}>
+					Camera Pan
+				</button>
+				<button className={styles.button}>New Card</button>
 			</div>
+
 			<div className={styles["game-area"]}>
 				<Canvas style={{ touchAction: "none" }}>
 					<Physics
-						gravity={[0, -9.8, 0]}
+						gravity={gravity}
 						allowSleep={false}
-						iterations={16}
+						iterations={32}
 						tolerance={0.001}
 						broadphase="SAP">
 						<axesHelper args={[12]} />
@@ -88,8 +92,8 @@ export default function MainScene() {
 							<PerspectiveCamera
 								fov={FOV}
 								makeDefault
-								position={[0, 3, 6]}
-								rotation={[Math.PI / -6, 0, 0]}
+								position={[0, 3, 6.2]}
+								rotation={[Math.PI / -7, 0, 0]}
 							/>
 						)}
 						{/* this is the card that you see */}
@@ -98,6 +102,7 @@ export default function MainScene() {
 								activeCard={activeCard}
 								dealer={dealer}
 								canvasSize={canvasSize}
+								activateGravity={activateGravity}
 							/>
 						)}
 						{/* this is an array with the cards on the table */}
@@ -112,7 +117,6 @@ export default function MainScene() {
 							))}
 					</Physics>
 				</Canvas>
-				<div className={styles["side-area-right"]}></div>
 			</div>
 		</div>
 	);

@@ -5,8 +5,8 @@ import { useBox } from "@react-three/cannon";
 import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 
-const startingPosition = [0, 2, 5];
-const Card = ({ canvasSize }) => {
+const startingPosition = [0, 2.3, 5.5];
+const Card = ({ canvasSize, activateGravity }) => {
 	const [isDragging, setIsDragging] = useState(false);
 	const [dragStart, setDragStart] = useState([0, 0]);
 	const [dragCurrent, setDragCurrent] = useState([0, 0]);
@@ -15,10 +15,11 @@ const Card = ({ canvasSize }) => {
 
 	// Setup physics for the card using useBox from react-three-cannon
 	const [ref, api] = useBox(() => ({
-		mass: 0.1,
+		mass: 0.001,
+
 		position: startingPosition,
-		rotation: [0, 0, 0],
-		args: [0.2, 0.38, 0.01],
+		rotation: [Math.PI / -7, 0, 0],
+		args: [0.55, 0.85, 0.01],
 		onCollide: (e) => {
 			console.log("collision");
 			setIsOnTable(true);
@@ -36,22 +37,19 @@ const Card = ({ canvasSize }) => {
 	// Handle dragging (pointer move)
 	const handlePointerMove = (event) => {
 		if (!isDragging) return;
+
 		// Update the current drag position
 		const newDragCurrent = [event.clientX, event.clientY];
 		setDragCurrent(newDragCurrent);
 
 		// Calculate the new X-Y Z constant
-		let deltaX = (dragCurrent[0] - dragStart[0]) / canvasSize[0];
-		let deltaY = -(dragCurrent[1] - dragStart[1]) / canvasSize[1];
+		const deltaX = (dragCurrent[0] - dragStart[0]) / canvasSize[0];
+		const deltaY = -(dragCurrent[1] - dragStart[1]) / canvasSize[1];
 
-		// Clamp the delta values
-		const maxDelta = 10;
-		const minDelta = -10;
+		console.log("drag: ", deltaX, deltaY);
 
-		deltaX = Math.min(Math.max(deltaX, minDelta), maxDelta);
-		deltaY = Math.min(Math.max(deltaY, minDelta), maxDelta);
-
-		api.position.set(deltaX * 6, 2 + deltaY * 6, startingPosition[2]); // Adjust scale as needed
+		//api.scaleOverride([1.5, 1.5, 1]);
+		//api.position.set(deltaX * 6, 2 + deltaY * 6, startingPosition[2]); // Adjust scale as needed
 	};
 
 	// Handle drag release (pointer up)
@@ -59,11 +57,23 @@ const Card = ({ canvasSize }) => {
 		setIsDragging(false);
 
 		// Calculate impulse based on the Y-axis drag velocity
-		const dragVelocityX = (dragCurrent[0] - dragStart[0]) / canvasSize[0];
-		const dragVelocityY = (dragCurrent[1] - dragStart[1]) / canvasSize[1];
+		let dragVelocityX = (dragCurrent[0] - dragStart[0]) / canvasSize[0];
+		let dragVelocityY = (dragCurrent[1] - dragStart[1]) / canvasSize[1];
 		api.mass.set(1);
-		const impulseStrength = [dragVelocityX * 100, dragVelocityY * 100]; // Adjust this factor as needed for flick strength
+		activateGravity();
 
+		const maxPitch = 5;
+		const minPitch = -5;
+
+		const maxForce = -0.1;
+		const minForce = -18;
+
+		dragVelocityX = Math.min(Math.max(dragVelocityX * 75, minPitch), maxPitch);
+		dragVelocityY = Math.min(Math.max(dragVelocityY * 75, minForce), maxForce);
+
+		const impulseStrength = [dragVelocityX, dragVelocityY];
+
+		console.log("impulse", impulseStrength);
 		// Apply impulse to the card in the Z direction (simulating a flick)
 		api.applyImpulse([impulseStrength[0], 0, impulseStrength[1]], [0, 0, 0]);
 		api.rotation.set(-Math.PI / 2, 0, 0);
@@ -75,11 +85,19 @@ const Card = ({ canvasSize }) => {
 		if (isImpulseApplied) {
 			// Optionally reset after flicking
 
-			api.applyTorque([0, -1, 0]);
+			api.applyTorque([0, -2, 0]);
+		}
+
+		if (isDragging) {
+			api.velocity.set(0, 0, 0);
 		}
 
 		if (!isDragging && !isImpulseApplied) {
-			api.position.set(0, 2, 5);
+			api.position.set(
+				startingPosition[0],
+				startingPosition[1],
+				startingPosition[2]
+			);
 			api.velocity.set(0, 0, 0);
 		}
 
