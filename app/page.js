@@ -3,7 +3,7 @@ import { OrbitControls, PerspectiveCamera } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
 import Table from "@/components/table";
 import Card from "@/components/card";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { dummyCards } from "@/dummy-data";
 import { Physics } from "@react-three/cannon";
 
@@ -13,50 +13,42 @@ import PlayedCard from "@/components/played-card";
 import TablePlane from "@/components/table-collision-plane";
 
 export default function MainScene() {
-	const [cards, setCards] = useState(dummyCards);
-	const [activeCard, setActiveCard] = useState();
-	const [playedCards, setPlayedCards] = useState([]);
 	const [isCameraClicked, setIsCameraClicked] = useState(false);
 	const [cameraManualControl, setCameraManualControls] = useState(false);
 	const [FOV, setFOV] = useState(55);
 	const [canvasSize, setCanvasize] = useState([720, 720]);
 	const [gravity, setGravity] = useState([0, 0, 0]);
 
+	//cards state
+	const [cards, setCards] = useState([]);
+	const [playedCards, setPlayedCards] = useState([]);
+	const [activeCardIndex, setActiveCardIndex] = useState(0);
+
 	useEffect(() => {
 		if (window.width < 768) {
 			setFOV(50);
 			setCanvasize([360, 360]);
 		}
-		if (cards.length > 0) {
-			if (!activeCard) {
-				// dealNewCard
-				const newSelectedCard = cards[0];
-				newSelectedCard.isActive = true;
-
-				setActiveCard(newSelectedCard);
-			}
-		}
-	}, [activeCard, cards]);
+		setCards(dummyCards);
+	}, []);
 
 	function activateGravity() {
 		setGravity([0, -9.8, 0]);
 	}
 
-	function dealer({ position, rotation }) {
-		const disActivatedCard = {
-			name: activeCard.name,
-			isActive: false,
-			isOnTable: true,
-			cardFinalPosition: position,
-			cardFinalRotation: rotation,
-		};
-
-		playedCards.push(disActivatedCard);
-		cards.shift();
-		setCards(cards);
+	const handleCardCollision = useCallback((position, rotation, cardId) => {
+		// setPlayedCards((prev) => [ { id: cardId, position, rotation },...prev]);
+		playedCards.push({ id: cardId, position, rotation });
 		setPlayedCards(playedCards);
-		setActiveCard(null);
-	}
+		// Move to the next card, if available
+		let newIndex = activeCardIndex;
+		if (activeCardIndex < cards.length - 1) {
+			newIndex = activeCardIndex + 1;
+		}
+
+		setActiveCardIndex(newIndex);
+		console.log(playedCards);
+	}, []);
 
 	return (
 		<div className={styles.master}>
@@ -97,25 +89,28 @@ export default function MainScene() {
 							/>
 						)}
 						{/* this is the card that you see */}
-						{activeCard && (
+						{activeCardIndex < cards.length && (
 							<Card
-								activeCard={activeCard}
-								dealer={dealer}
+								key={cards[activeCardIndex].id}
 								canvasSize={canvasSize}
 								activateGravity={activateGravity}
+								initialPosition={cards[activeCardIndex].position}
+								isDraggable={true} // Only the active card is draggable
+								cardId={cards[activeCardIndex].id}
+								onCollision={handleCardCollision}
 							/>
 						)}
-						{/* this is an array with the cards on the table */}
-						{playedCards.length > 0 &&
-							playedCards.map((card) => (
-								<PlayedCard
-									key={card.name}
-									position={card.cardFinalPosition}
-									rotation={card.cardFinalRotation}
-									texture={null}
-								/>
-							))}
 					</Physics>
+					{/* this is an array with the cards on the table */}
+					{playedCards.length > 0 &&
+						playedCards.map((card) => (
+							<PlayedCard
+								key={`played_${card.id}`}
+								position={card.position}
+								rotation={card.rotation}
+								isDraggable={false}
+							/>
+						))}
 				</Canvas>
 			</div>
 		</div>

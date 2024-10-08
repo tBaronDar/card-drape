@@ -1,28 +1,44 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useRef, useState } from "react";
 import { useBox } from "@react-three/cannon";
 import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 
 const startingPosition = [0, 2.3, 5.5];
-const Card = ({ canvasSize, activateGravity }) => {
+const Card = ({ canvasSize, activateGravity, onCollision, cardId }) => {
 	const [isDragging, setIsDragging] = useState(false);
 	const [dragStart, setDragStart] = useState([0, 0]);
 	const [dragCurrent, setDragCurrent] = useState([0, 0]);
 	const [isImpulseApplied, setIsImpulseApplied] = useState(false);
-	const [isOnTable, setIsOnTable] = useState(false);
+	const isOnTableRef = useRef(false);
 
 	// Setup physics for the card using useBox from react-three-cannon
 	const [ref, api] = useBox(() => ({
 		mass: 0.001,
-
 		position: startingPosition,
 		rotation: [Math.PI / -7, 0, 0],
 		args: [0.55, 0.85, 0.01],
 		onCollide: (e) => {
+			if (isOnTableRef.current) return;
+
+			// Set the card to be considered on the table
+			isOnTableRef.current = true;
 			console.log("collision");
-			setIsOnTable(true);
+
+			const finalPosition = [
+				ref.current.position.x,
+				ref.current.position.y,
+				ref.current.position.z,
+			];
+			const finalRotation = [
+				ref.current.rotation.x,
+				ref.current.rotation.y,
+				ref.current.rotation.z,
+			];
+			console.log(finalPosition, finalRotation);
+			// Notify parent component that this card has collided
+			onCollision(finalPosition, finalRotation, cardId);
 		},
 	}));
 
@@ -41,15 +57,6 @@ const Card = ({ canvasSize, activateGravity }) => {
 		// Update the current drag position
 		const newDragCurrent = [event.clientX, event.clientY];
 		setDragCurrent(newDragCurrent);
-
-		// Calculate the new X-Y Z constant
-		const deltaX = (dragCurrent[0] - dragStart[0]) / canvasSize[0];
-		const deltaY = -(dragCurrent[1] - dragStart[1]) / canvasSize[1];
-
-		console.log("drag: ", deltaX, deltaY);
-
-		//api.scaleOverride([1.5, 1.5, 1]);
-		//api.position.set(deltaX * 6, 2 + deltaY * 6, startingPosition[2]); // Adjust scale as needed
 	};
 
 	// Handle drag release (pointer up)
@@ -73,7 +80,7 @@ const Card = ({ canvasSize, activateGravity }) => {
 
 		const impulseStrength = [dragVelocityX, dragVelocityY];
 
-		console.log("impulse", impulseStrength);
+		// console.log("impulse", impulseStrength);
 		// Apply impulse to the card in the Z direction (simulating a flick)
 		api.applyImpulse([impulseStrength[0], 0, impulseStrength[1]], [0, 0, 0]);
 		api.rotation.set(-Math.PI / 2, 0, 0);
@@ -84,7 +91,6 @@ const Card = ({ canvasSize, activateGravity }) => {
 	useFrame(() => {
 		if (isImpulseApplied) {
 			// Optionally reset after flicking
-
 			api.applyTorque([0, -2, 0]);
 		}
 
@@ -99,9 +105,6 @@ const Card = ({ canvasSize, activateGravity }) => {
 				startingPosition[2]
 			);
 			api.velocity.set(0, 0, 0);
-		}
-
-		if (isOnTable) {
 		}
 	});
 

@@ -2,24 +2,21 @@
 
 export const dummyCards = [
 	{
-		name: "tenDiamonds",
-		isActive: true,
+		id: "tenDiamonds",
 		isOnTable: false,
-		cardFinalPosition: [0, 2, 5],
-		cardFinalRotation: [0, 0, 0],
+		position: [0, 2, 5],
+		rotation: [0, 0, 0],
 	},
 	{
-		name: "twoHearts",
-		isActive: false,
+		id: "twoHearts",
 		isOnTable: false,
-		cardFinalPosition: [0, 2, 5],
-		cardFinalRotation: [0, 0, 0],
+		position: [0.5, 2, 5],
+		rotation: [0, 0, 0],
 	},
 	{
-		name: "oneSpades",
-		isActive: false,
+		id: "oneSpades",
 		isOnTable: false,
-		cardFinalPosition: [0, 2, 5],
-		cardFinalRotation: [0, 0, 0],
+		position: [1, 2, 5],
+		rotation: [0, 0, 0],
 	},
 ];
